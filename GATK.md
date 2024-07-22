@@ -59,6 +59,7 @@ conda install \
     -c bioconda \
     -c conda-forge samtools fastqc fastp bwa
 ```
+
 :::info
 ## :computer: Analysis Steps
 :::
