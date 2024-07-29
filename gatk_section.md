@@ -1,3 +1,5 @@
+![aceLogo](https://hackmd.io/_uploads/HJIhqMBYA.png)
+
 # <font color="green"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </font> 
 ---
 ## **STEP1:** <font color="violet">PRE-PROCESSING</font>
@@ -103,6 +105,8 @@ for id in $(cat samples.txt); do
         samtools view -bS - > ./bams/${id}.bam
 done
 ```
+>The output are bam files as below
+                   
 :::info
 Th <mark>for loop</mark> enables you to perform alignment on multiple samples as above
 >Breakdown of the <font color="red">**options**</font> used
