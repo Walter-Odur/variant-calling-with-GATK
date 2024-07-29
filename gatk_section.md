@@ -1,9 +1,8 @@
 # <font color="green"> **SOMATIC VARIANT DETECTION IN CANCER** </font> 
 ---
-## <p align="center"> **STEP2:** <font color="green">Alignment To The Reference And Preparing Bam Files For Variant            calling</font> </p>
+## **STEP2:** <font color="green">Alignment To The Reference And Preparing Bam Files For Variant            calling</font>
 
 ---
-
 ### Tools Involved:
 >>- <font color="red">BWA
 >>- Samtools
