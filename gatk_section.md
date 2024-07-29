@@ -1,6 +1,8 @@
 # <font color="green"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </font> 
 ---
-## **STEP2:** <font color="green">Alignment To The Reference And Preparing Bam Files For Variant            calling</font>
+## **STEP1:** <font color="violet">PRE-PROCESSING</font>
+---
+## **STEP2:** <font color="violet">ALIGNMENT TO THE REFERENCE AND PREPARING BAM FILES FOR VARIANT CALLING</font>
 
 ---
 ### Tools Involved:
@@ -9,7 +11,7 @@
 >>- GATK
 </font>
 
-### <font color="blue">(a): Align Reads To The Reference</font>
+### <font color="blue">2(a): Align Reads To The Reference</font>
 ---
 >This process involves mapping sequencing reads to their corresponding positions on a reference genome purposely to determine where they originate from within the genome
 >
@@ -88,11 +90,11 @@ Run the following commands to perform the <font color="blue">**alignment**</font
 
 ```bash=
 # ensure you have a directory called bams to store alignment results
-mkdir ./bams
+mkdir -p ./bams
 ```
 ```bash=
 # Align paired end reads to the reference
-for id in $(cat samples.txt]; do
+for id in $(cat samples.txt); do
     bwa mem \
         -t 4 -aM ./ref/Homo_sapiens_assembly38.fasta \
         -R "@RG\tID:${id}\tSM:${id}\tPL:ILLUMINA" \
@@ -103,8 +105,9 @@ done
 ```
 :::info
 Th <mark>for loop</mark> enables you to perform alignment on multiple samples as above
-:::
 >Breakdown of the <font color="red">**options**</font> used
+:::
+>
 >>- <font color="red">-t:</font> This specifies the number of threads(CPU) to use, <font color="green">*4 CPUs*</font> in this case. This speeds up the process. You can adjust this value depending on your need and the capability of your machine
 >>- <font color="red">-a:</font> Outputs all alignments for SE or unpaired PE reads, not just the best one
 >>- <font color="red">-M:</font> Marks shorter split hits as secondary alignment, for <font color="green">*Picard compatibility*</font>
@@ -122,7 +125,7 @@ Th <mark>for loop</mark> enables you to perform alignment on multiple samples as
 ><font color="orange">Sorting</font> is to organize the aligned reads either by their genomic coordinates or by read names, which is essential for downstream analyses such as duplicate marking, variant calling, and efficient data retrieval.
 :::
 ```bash=
-for id in $(cat samples.txt]; do
+for id in $(cat samples.txt); do
     samtools sort ./bams/${id}.bam -o ./bams/${id}_sorted.bam 
 done
 ```
@@ -132,7 +135,7 @@ done
 >You can as well generate the alignment summary statistics for the bam files using <mark>*samtools flagstat*</mark> command
 :::
 ```bash=
-for id in $(cat samples.txt]; do
+for id in $(cat samples.txt); do
     samtools index ./bams/${id}_sorted.bam
     samtools flagstat ./bams/${id}_sorted.bam > ./bams/${id}.stats.txt || exit 1
 done
@@ -141,247 +144,223 @@ done
 >The next step is to mark sequence duplicates. This is done using GATK (Genome Analysis Toolkit)
 >GATK is a software suite developed by the Broad Institute for analyzing high-throughput sequencing data. It offers a wide range of utilities that perform a number of tasks such as quality control, data processing, duplicate marking, base recalibration, variant calling among others
 :::
-   
-   
-   
-   
-   
-   
-```
-#### <font color="blue">(b): Mark Duplicates</font>
+### <font color="blue">2(a): Mark Sequence Duplicates </font>
+> The <font color="red">*GATK MarkDuplicates*</font> tool identifies and tags duplicate reads (reads originating from a single DNA fragment) in a BAM or SAM file.
+> These duplicates arise during sample preparation or from optical sensor errors.
+> 
+> The tool compares sequences at the 5' positions, uses molecular barcodes if available, and marks duplicates in the SAM flags field with a hexadecimal value of 0x0400 (decimal 1024), producing a new SAM or BAM file with these annotations
+> 
+:::success
+:computer: Run the following commands to mark duplicates
+:::
 ```bash=
-# Marh Duplicates if not yet done
-
-if ls ./gatk/*_mkdp.bam 1> /dev/null 2>&1; then
-    echo "Duplicates already marked 👌👌👌👌"
-else
-    echo "Marking duplicates in aligned samples 😊😊😊😊"
-    for id in ${IDs[@]}; do
-        gatk MarkDuplicates \
-            --INPUT ./bams/${id}_sorted.bam \
-            --OUTPUT ./gatk/${id}_mkdp.bam \
-            --METRICS_FILE ./gatk/${id}_metrics.txt \
-            --REMOVE_DUPLICATES false \
-            --CREATE_INDEX true || exit 1
-        samtools flagstat ./gatk/${id}_mkdp.bam > ./gatk/${id}_mkdp.bam.flagstat || exit 1
-    done
-    echo "Marking Duplicates Done 👌👌👌👌"
-fi
+# Make a directory to store the output of gatk MarkDuplicates
+mkdir -p ./gatk
 ```
-#### <font color="blue">(c.): Base Quality Score Recalibration (BQSR)</font>
-```bash=+
-if ls ./recal/*_recal.bam 1> /dev/null 2>&1; then
-    echo "BQSR already done 👌👌👌👌"
-else
-    echo "Performing BQSR 😊😊😊😊"
-    for id in ${IDs[@]}; do
-    
-        # Generate recalibration table
-        gatk BaseRecalibrator \
-            -I ./gatk/${id}_mkdp.bam \
-            -R ${ref} \
-            --known-sites ./ref/Mills_and_1000G_gold_standard.indels.hg38.vcf \
-            --known-sites ./ref/Homo_sapiens_assembly38.known_indels.vcf \
-            --known-sites ./ref/1000G_phase1.snps.high_confidence.hg38.vcf \
-            -O ./recal/${id}_recal_data.table || exit 1
-
-        # Apply the recalibration data
-        gatk ApplyBQSR \
-            -R ${ref} \
-            -I ./gatk/${id}_mkdp.bam \
-            --bqsr-recal-file ./recal/${id}_recal_data.table \
-            -O ./recal/${id}_recal.bam || exit 1
-    done
-    echo "Base Recalibration Done 👌👌👌👌"
-fi
-
-# This step outputs recalibrated bam file with the extension _recal.bam
+```bash=
+for id in $(cat samples.txt); do
+    gatk MarkDuplicates \
+        --INPUT ./bams/${id}_sorted.bam \
+        --OUTPUT ./gatk/${id}_mkdp.bam \
+        --METRICS_FILE ./gatk/${id}_metrics.txt \
+        --REMOVE_DUPLICATES false \
+        --CREATE_INDEX true
+done
 ```
-
-:::success
-### **:congratulations: <font color="purple">Great Job!! We Are Now Heading To Variant Calling!!**</font>
-:::
-> Step Three (3) will be our final step for somatic variant calling, and we have a <font color="blue">**filtered vcf file**</font> containing somatic sequence variants.
-
-> Let's proceed to the final analysis step.
-
 :::info
-### **Step :three::** <font color="green">Somatic Variant Calling and Annotation</font> 
+>Breakdown of the <font color="red">**options**</font> used
 :::
+>>- <font color="red">- -REMOVE_DUPLICATES false:</font> Indicates that duplicates should be marked but not removed from the BAM file.
+>>If <font color="red"> true</font> do not write duplicates to the output file
+instead of writing them with appropriate flags set.
+>>- <font color="red">- -INPUT:</font> One or more input SAM or BAM files to analyze. Must be coordinate sorted.
+>>- <font color="red">- -OUTPUT:</font> The output file to write marked records to.
+>>- <font color="red">- -METRICS_FILE:</font> File to write duplication metrics to. This file contains statistics about the duplicates found in the input BAM.
+>>- <font color="red">- -CREATE_INDEX true:</font> Creates an index for the output BAM file, enabling quick access to specific regions.
 
-#### Tools Involved:
->>- <font color="red">Mutect2
->>- GetPileupSummaries
->>- CalculateContamination
->>- FilterMutectCalls
->>- SnpEff
-</font>
-
-#### <font color="purple">**Define Tumor-Normal Sample Pair**</font>
-```bash=+
-declare -A samples=(
-    ["SRR25434464"]="SRR25434464_recal.bam"
-    ["SRR25434465"]="SRR25434465_recal.bam"
-    ["SRR25434466"]="SRR25434466_recal.bam"
-    ["SRR25434467"]="SRR25434467_recal.bam"
-)
-```
-> We shall be using functions to simplify and fasten the process
-
-#### <font color="blue">(a): Variant Calling</font>
->- Create a function to call variants
-
-```bash=+
-call_variants() {
-        local tumor_sample=$1
-        local normal_sample=$2
-        java \
-                -Dsamjdk.use_async_io_read_samtools=false \
-                -Dsamjdk.use_async_io_write_samtools=true \
-                -Dsamjdk.use_async_io_write_tribble=false \
-                -Dsamjdk.compression_level=2 \
-                -Xmx16g \
-                -Djava.io.tmpdir=tempDir \
-                -jar /opt/ohpc/admin/spack/0.17.0/opt/spack/linux-rocky8-sandybridge/gcc-8.5.0/gatk-4.2.2.0-7fb72tl4fvlec6vn7yw46o4zdq2cspnz/bin/gatk-package-4.2.2.0-local.jar Mutect2 \
-                -I ./recal/${tumor_sample}_recal.bam \
-                --tumor-sample ${tumor_sample} \
-                -I ./recal/${normal_sample}_recal.bam \
-                --normal-sample ${normal_sample} \
-                -O ./mut2/${tumor_sample}_vs_${normal_sample}.Mut2.raw.vcf \
-                --germline-resource ./ref/af-only-gnomad.hg38.vcf \
-                --tmp-dir ./tempDir
-}
-```
-#### <font color="blue">(b): Variant Filtering </font>
->- Create a function to filter variants
-
-```bash=+
-filter_variants() {
-        local tumor_sample=$1
-        local normal_sample=$2
-        local mut2_vcf=mut2/${tumor_sample}_vs_${normal_sample}.Mut2.raw.vcf
-
-        if ls ./mut2/${tumor_sample}_vs_${normal_sample}.Mut2.Filtered.vcf 1> /dev/null 2>&1; then
-                echo "Variant filtering already done👌👌👌👌"
-        else
-                echo "performing Variant filtering 😊😊😊😊"
-                for sample in ${tumor_sample} ${normal_sample}; do
-                        if [ -e ./recal/${sample}_recal.bam ]; then
-                                echo "Found file for ${sample}_recal.bam"
-                                echo "Getting pileup information for the samples at sites of known mutations"
-                #---------
-                # [i]:  Get pileup summaries
-                #---------
-                                gatk GetPileupSummaries \
-                                        -I ./recal/${sample}_recal.bam \
-                                        -O ./pileups/${sample}.pileups.table \
-                                        --variant ./ref/af-only-gnomad.hg38.vcf \
-                                        --intervals ./ref/Illumina_Exome_TargetedRegions_v1.2.hg38.bed \
-                                        --TMP_DIR tempDir \
-                                        --java-options '-Xmx16g -Djava.io.tmpdir=tempDir'
-                        else
-                                echo "No corresponding file found for ${sample}_recal.bam"
-                        fi
-                done
-
-                if [ -e pileups/${tumor_sample}.pileups.table ] && [ -e pileups/${normal_sample}.pileups.table ]; then
-                        echo "Found pileup files for ${tumor_sample} and ${normal_sample}"
-
-                        echo "Estimating contamination"
-
-                #---------
-                # [i]:  Calculate contamination
-                #---------
-                        gatk CalculateContamination \
-                                -I ./pileups/${tumor_sample}.pileups.table \
-                                -O ./pileups/Tumor_Normal.contamination.table \
-                                --matched-normal ./pileups/${normal_sample}.pileups.table \
-                                --TMP_DIR ./tempDir \
-                                --java-options '-Xmx16g -Djava.io.tmpdir=tempDir'
-
-                        echo "Applying filter to variant calls"
-
-                #---------
-                # [ii]: Apply the Filter to variants
-                #---------
-                        gatk FilterMutectCalls \
-                                --variant ${mut2_vcf} \
-                                -O ./mut2/${tumor_sample}_vs_${normal_sample}.Mut2.filtered.vcf \
-                                --contamination-table ./pileups/Tumor_Normal.contamination.table \
-                                --reference ./ref/Homo_sapiens_assembly38.fasta \
-                                --TMP_DIR ./tempDir \
-                                --java-options '-Xmx16g -Djava.io.tmpdir=tempDir'
-
-                        echo "Removing variants that failed to pass the filter check"
-                
-                #---------
-                # [iii]: Extract Variants that passed the filter
-                #---------
-                        awk \
-                                '/^#/ {print $0; next} $7=="PASS" {print $0}' \
-                                ./mut2/${tumor_sample}_vs_${normal_sample}.Mut2.filtered.vcf > \
-                                ./mut2/${tumor_sample}_vs_${normal_sample}.Mut2.Filtered.vcf
-                else
-                        echo "No corresponding pileup files found for ${tumor_sample} and ${normal_sample}"
-                fi
-                echo "Variant filtering done👌👌👌👌"
-        fi
-}
-```
-
-#### <font color="blue">(c.): Variant Annotation</font>
->- Create a function to annotate variants
-
-```bash=+
-annotate_variants() {
-        local filtered_vcf=mut2/${tumor_sample}_vs_${normal_sample}.Mut2.Filtered.vcf
-        if ls ./annotations/*_annsnpEff.vcf 1> /dev/null 2>&1; then
-                echo "variants already annotated👌👌👌👌"
-        else
-                echo "Annotating variants 😊😊😊😊"
-                java -jar \
-                        ./snpEff/snpEff.jar \
-                        hg38 \
-                        ${filtered_vcf} > \
-                        ./annotations/$(basename ${filtered_vcf} .vcf)_annsnpEff.vcf
-        fi
-}
-```
-
+### <font color="blue">2(c.): Base Quality Score Recalibration (BQSR)</font>
+>The goal of this step is to correct for systematic bias that affect the assignment of base
+quality scores by the sequencer.
+>
+>BQSR is done in two steps:
+>> The first pass <mark>*(Generation of recalibration table)*</mark> consists of calculating error empirically and finding patterns in how error varies with basecall features over all bases. The relevant observations are written to a recalibration table.
+>> The second pass <mark>*(Applyng generated recalibration data)*</mark> consists of applying numerical corrections to each individual basecall based on the patterns identified in the first step (recorded in the recalibration table) and write out the recalibrated data to a new BAM or CRAM file.
 :::success
-### **:congratulations: <font color="purple">Now Lets Execute Our Functions Here!!**</font>
+:computer: Generate Recalibration Table
 :::
+>Tool: <font color="red"> *gatk BaseRecalibrator* </font>
+```bash=
+for id in $(cat samples.txt); do
+    gatk BaseRecalibrator \
+        -I ./gatk/${id}_mkdp.bam \
+        -R ${ref} \
+        --known-sites ./ref/Mills_and_1000G_gold_standard.indels.hg38.vcf \
+        --known-sites ./ref/Homo_sapiens_assembly38.known_indels.vcf \
+        --known-sites ./ref/1000G_phase1.snps.high_confidence.hg38.vcf \
+        -O ./recal/${id}_recal_data.table
+done
+```
+:::success
+:computer: Apply Recalibration data to bam file
+:::
+> Tool: <font color="red"> *gatk ApplyBQSR*</font>
+```bash=
+for id in $(cat samples.txt); do
+    gatk ApplyBQSR \
+        -R ${ref} \
+        -I ./gatk/${id}_mkdp.bam \
+        --bqsr-recal-file ./recal/${id}_recal_data.table \
+        -O ./recal/${id}_recal.bam
+done
+```
+:::info
+>Breakdown of the <font color="red">**options**</font> used
+:::
+>>- <font color="red">--bqsr-recal-file:</font> Input recalibration table for BQSR
+>>- <font color="red">--known-sites:</font> One or more databases of known polymorphic sites used to exclude regions around known polymorphisms from analysis. You can obtain the files from [**GOOGLE CLOUD**](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0;tab=objects?prefix=&forceOnObjectsSortingFiltering=false). After downloading, make sure you index the sites files using <font color="red"> *gatk IndexFeatureFile*</font> 
+>>- <font color="red">-I:</font> BAM/SAM/CRAM file containing reads
+>>- <font color="red">-O:</font> The file to which the output should be written
+>>- <font color="red">-R:</font> Reference sequence
 
-```bash=+
-call_variants "SRR25434464" "SRR25434465" &
-call_variants "SRR25434466" "SRR25434467" &
-wait
 
-filter_variants "SRR25434464" "SRR25434465" &
-filter_variants "SRR25434466" "SRR25434467" &
-wait
-
-annotate_variants \
-        mut2/SRR25434464_vs_SRR25434465.Mut2.Filtered.vcf &
-annotate_variants \
-        mut2/SRR25434466_vs_SRR25434467.Mut2.Filtered.vcf &
-
-echo "All processes completed successfully!"
-
-echo "Time taken: $(($duration / 3600))h: $((($duration % 3600) / 60))m: $(($duration % 60))s"
+## **STEP3:** <font color="violet">VARIANT CALLING AND ANNOTATION</font>
+Downloading population variant file and its index (used to filter out potential germline mutations from the final list of somatic mutations). These are available at [link](https://console.cloud.google.com/storage/browser/gatk-best-practices/somatic-hg38;tab=objects?prefix=&forceOnObjectsSortingFiltering=false) 
+```{bash}
+wget -P reference https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz
+wget -P reference https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz.tbi
+```
+Unzipping the vcf file downloaded above.
+```{bash}
+gunzip $dir3/af-only-gnomad.hg38.vcf.gz
 ```
 
+```{bash}
+k5="af-only-gnomad.hg38.vcf.gz"
+
+# Creating variables with tumor and normal sample names respectively
+tsample=$(cat tsamples)
+nsample=$(cat nsamples)
+
+for i in $tsample
+do
+  # Assuming names are separated by space in the respective files
+  name1=$(echo "$i" | cut -d ' ' -f 1)
+  j=$(echo "$nsample" | cut -d ' ' -f 1)
+  echo "$name1,$j"
+  START="$( date +%s )"
+  gatk  Mutect2 -R $dir3/$ref -I $dir5/${name1}_tumor_recal.bam --tumor-sample ${name1} -I $dir7/${j}_normal_recal.bam --normal-sample ${j} -O $dir6/${name1}_tumor_${j}_normal.Mutect2.raw.vcf --germline-resource $dir3/$k5 --tmp-dir temp_dir --java-options '-Xmx16g -Djava.io.tmpdir=tmp'
+  END="$( date +%s )"
+  echo "==================Variant calling ${i,j} : $[ $END - $START ] seconds===============" >> time.txt
+# Shift remaining names in both variables
+  tsample=$(echo "$tsample" | cut -d ' ' -sf 2-)
+  nsample=$(echo "$nsample" | cut -d ' ' -sf 2-)
+done
+```
 :::success
-**A brief description of some few commands used*** 
+### :feet: Step 3b: Variant filtering
 :::
-> <font color="red">**||exit 1**</font>
->>- To <font color="blue">**exit the script**</font> once that particular script block has not run successfully.
->>
-> <font color="red">**&**</font> on at the ends of the functions:
->>- To allow <font color="blue">**parallel run**</font> (Processing multiple sample pairs simultaneosly)
 
-> <font color="red">**wait**</font> after calling the function:
->>- To <font color="blue">**inhibit**</font> two adjascent processes from running in parallel as the next process must wait for the output of the running process and takes in as its input. 
 
->**<font color="blue">Congratulations! You have just learnt a Comprehensive pipeline for detecting somatic mutation. All the Best In Your Cancer Genomics Journey!
-</font>**
+
+```{bash}
+for i in $tsample
+do
+  # Assuming names are separated by space
+  name1=$(echo "$i" | cut -d ' ' -f 1)
+  j=$(echo "$nsample" | cut -d ' ' -f 1)
+  echo "$name1,$j"
+  if [ -e $dir5/${name1}_tumor_recal.bam ]
+	then
+		echo "Found file for ${i}_tumrecal_sorted.bam"
+	       	echo "Getting pileup information for the samples at sites of known mutations"
+		START="$( date +%s )"
+	       	gatk GetPileupSummaries -I $dir5/${name1}_tumor_recal.bam -O $dir6/${name1}_tumor.pileups.table --variant $dir3/$k5 --intervals Illumina_Exome_TargetedRegions_v1.2.hg38.bed --tmp-dir temp_dir --java-options '-Xmx16g -Djava.io.tmpdir=tmp'
+		END="$( date +%s )"
+		echo "==================Generating pileup summaries for ${name1} : $[ $END - $START ] seconds===============" >> time.txt
+	else
+		echo "No corresponding file found for ${i}_tumrecal_sorted.bam"
+	fi
+	if [ -e $dir7/${j}_normal_recal.bam ]
+	then
+		echo "Found file for ${i}_normrecal_sorted.bam"
+		START="$( date +%s )"
+	       	gatk GetPileupSummaries -I $dir7/${j}_normal_recal.bam -O $dir6/${j}_normal.pileups.table --variant $dir3/$k5 --intervals Illumina_Exome_TargetedRegions_v1.2.hg38.bed --tmp-dir temp_dir --java-options '-Xmx16g -Djava.io.tmpdir=tmp'
+		END="$( date +%s )"
+		echo "==================Generating pileup summaries for ${j} : $[ $END - $START ] seconds===============" >> time.txt
+	else
+		echo "No corresponding file found for ${i}_normrecal_sorted.bam"
+	fi
+	if [ -e $dir6/${name1}_tumor.pileups.table ] || [ -e $dir6/${j}_normal.pileups.table ]
+	then
+		echo "Found files for ${name1}_tumor.pileups.table and ${j}_normal.pileups.table"
+	       	echo "Estimation of contamination"
+		START="$( date +%s )"
+   	   	gatk CalculateContamination -I $dir6/${name1}_tumor.pileups.table -O $dir6/${name1}_Tumor_${j}_Normal.contamination.table --matched-normal $dir6/${j}_normal.pileups.table --tmp-dir temp_dir --java-options '-Xmx16g -Djava.io.tmpdir=tmp'
+		END="$( date +%s )"
+		echo "==================Calculating contaminations for ${name1,j} : $[ $END - $START ] seconds===============" >> time.txt
+	       	echo "Application of a first filter to variant calls"
+		START="$( date +%s )"
+	       	gatk FilterMutectCalls --variant $dir6/${name1}_tumor_${j}_normal.Mutect2.raw.vcf -O $dir6/${name1}_Tumor_${j}_Normal.Mutect2.oncefiltered.vcf --contamination-table $dir6/${name1}_Tumor_${j}_Normal.contamination.table --reference $dir3/$ref --tmp-dir temp_dir --java-options '-Xmx16g -Djava.io.tmpdir=tmp'
+		END="$( date +%s )"
+		echo "==================Applying first filtering parameters ${name1,j} : $[ $END - $START ] seconds===============" >> time.txt
+#		echo "Applying the second pass filter"
+#		START="$( date +%s )"
+#	       	gatk FilterByOrientationBias --variant $dir6/${name1}_Tumor_${j}_Normal.Mutect2.oncefiltered.vcf  -O $dir6/${name1}_Tumor_${j}_Normal.Mutect2.twicefiltered.vcf
+#		END="$( date +%s )"
+#		echo "==================Applying second filtering parameters ${name1,j} : $[ $END - $START ] seconds===============" >> time.txt
+     		echo "Removing variants that failed to pass the filter check"
+		START="$( date +%s )"
+	       	awk '/^#/ {print $0; next} $7=="PASS" {print $0}' $dir6/${name1}_Tumor_${j}_Normal.Mutect2.oncefiltered.vcf > $dir6/${name1}_T_${j}_N.vcf
+		END="$( date +%s )"
+		echo "==================Removing variants that failed to pass the filters for ${name1,j} : $[ $END - $START ] seconds===============" >> time.txt
+	else
+		echo "No corresponding file found for SRR25434460_tumor.pileups.table and SRR25434461_normal.pileups.table"
+	fi
+# Shift remaining names in both variables
+  tsample=$(echo "$tsample" | cut -d ' ' -sf 2-)
+  nsample=$(echo "$nsample" | cut -d ' ' -sf 2-)
+done
+```
+:::success
+### :feet: Step 3c: variant annotation
+:::
+
+
+```{bash}
+for i in $tsample
+do
+  # Assuming names are separated by space
+  name1=$(echo "$i" | cut -d ' ' -f 1)
+  j=$(echo "$nsample" | cut -d ' ' -f 1)
+  echo "$name1,$j"
+  echo "Variant Annotation of $name1 and $j using snpeff"
+  START="$( date +%s )"
+  snpEff download -v hg38
+  END="$( date +%s )"
+  echo "================== Downloading the hg38 reference database : $[ $END - $START ] seconds===============" >> time.txt
+  START="$( date +%s )"
+  snpEff hg38 $dir6/${name1}_T_${j}_N.vcf > $dir6/${name1}_T_${j}_N_annsnpEff.vcf
+  snpEff hg38 -s ${name1}_T_${j}_N_summary.html -stats ${name1}_T_${j}_N_stats.txt $dir6/${name1}_T_${j}_N.vcf > $dir6/${name1}_T_${j}_N_annsnpEff.vcf
+  END="$( date +%s )"
+  echo "==================Applying annotations for ${name1,j} : $[ $END - $START ] seconds===============" >> time.txt
+ # Shift remaining names in both variables
+  tsample=$(echo "$tsample" | cut -d ' ' -sf 2-)
+  nsample=$(echo "$nsample" | cut -d ' ' -sf 2-)
+done
+```
+
+
+1. Create the repository on GitHub(website); if it already exists, skip it.
+2. Go to terminals
+	1. git clone https://github.com/repository.git
+	2. cd repository
+	3. git status
+	4. git add .
+	5. git status
+	6. git commit -m "[what are you do]"
+	7. git push
+	8. Enter: the username
+	9. Enter: token (ps: password had been canceled)
+        - Settings
+        - Developer settings
+        - Personal access tokens
