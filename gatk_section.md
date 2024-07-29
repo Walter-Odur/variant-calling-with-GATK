@@ -1,6 +1,4 @@
-![aceLogo](https://hackmd.io/_uploads/SyF792EKA.png)
-
-# <p align="center"> **SOMATIC VARIANT DETECTION IN CANCER** </p> 
+# <font color="green"> **SOMATIC VARIANT DETECTION IN CANCER** </font> 
 ---
 ## <p align="center"> **STEP2:** <font color="green">Alignment To The Reference And Preparing Bam Files For Variant            calling</font> </p>
 
