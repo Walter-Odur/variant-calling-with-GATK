@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>
+        GATK Process - HackMD
+    </title>
+    <link rel="icon" type="image/png" href="https://hackmd.io/favicon.png">
+    <link rel="apple-touch-icon" href="https://hackmd.io/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" integrity="sha256-3iu9jgsy9TpTwXKb7bNQzqWekRX7pPK+2OLj3R922fo=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css" integrity="sha256-QiWfLIsCT02Sdwkogf6YMiQlj4NE84MKkzEMkZnMGdg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/themes/prism.min.css" integrity="sha256-vtR0hSWRc3Tb26iuN2oZHt3KRUomwTufNIf5/4oeCyg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/css/basic/emojify.min.css" integrity="sha256-UOrvMOsSDSrW6szVLe8ZDZezBxh5IoIfgTwdNDgTjiU=" crossorigin="anonymous" />
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i|Source+Code+Pro:300,400,500|Source+Sans+Pro:300,300i,400,400i,600,600i|Source+Serif+Pro&subset=latin-ext);.hljs{background:#fff;color:#333;display:block;overflow-x:auto;padding:.5em}.hljs-comment,.hljs-meta{color:#969896}.hljs-emphasis,.hljs-quote,.hljs-string,.hljs-strong,.hljs-template-variable,.hljs-variable{color:#df5000}.hljs-keyword,.hljs-selector-tag,.hljs-type{color:#a71d5d}.hljs-attribute,.hljs-bullet,.hljs-literal,.hljs-number,.hljs-symbol{color:#0086b3}.hljs-built_in,.hljs-builtin-name{color:#005cc5}.hljs-name,.hljs-section{color:#63a35c}.hljs-tag{color:#333}.hljs-attr,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-selector-pseudo,.hljs-title{color:#795da3}.hljs-addition{background-color:#eaffea;color:#55a532}.hljs-deletion{background-color:#ffecec;color:#bd2c00}.hljs-link{text-decoration:underline}.markdown-body{word-wrap:break-word;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;font-size:16px;line-height:1.5}.markdown-body:after,.markdown-body:before{content:"";display:table}.markdown-body:after{clear:both}.markdown-body>:first-child{margin-top:0!important}.markdown-body>:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body .absent{color:#c00}.markdown-body .anchor{float:left;line-height:1;margin-left:-20px;padding-right:4px}.markdown-body .anchor:focus{outline:none}.markdown-body blockquote,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul{margin-bottom:16px;margin-top:0}.markdown-body hr{background-color:#e7e7e7;border:0;height:.25em;margin:24px 0;padding:0}.markdown-body blockquote{border-left:.25em solid #ddd;color:#777;font-size:16px;padding:0 1em}.markdown-body blockquote>:first-child{margin-top:0}.markdown-body blockquote>:last-child{margin-bottom:0}.markdown-body kbd,.popover kbd{background-color:#fcfcfc;border:1px solid;border-color:#ccc #ccc #bbb;border-radius:3px;box-shadow:inset 0 -1px 0 #bbb;color:#555;display:inline-block;font-size:11px;line-height:10px;padding:3px 5px;vertical-align:middle}.markdown-body .loweralpha{list-style-type:lower-alpha}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{font-weight:600;line-height:1.25;margin-bottom:16px;margin-top:24px}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{color:#000;vertical-align:middle;visibility:hidden}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{text-decoration:none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{visibility:visible}.markdown-body h1 code,.markdown-body h1 tt,.markdown-body h2 code,.markdown-body h2 tt,.markdown-body h3 code,.markdown-body h3 tt,.markdown-body h4 code,.markdown-body h4 tt,.markdown-body h5 code,.markdown-body h5 tt,.markdown-body h6 code,.markdown-body h6 tt{font-size:inherit}.markdown-body h1{font-size:2em}.markdown-body h1,.markdown-body h2{border-bottom:1px solid #eee;padding-bottom:.3em}.markdown-body h2{font-size:1.5em}.markdown-body h3{font-size:1.25em}.markdown-body h4{font-size:1em}.markdown-body h5{font-size:.875em}.markdown-body h6{color:#777;font-size:.85em}.markdown-body ol,.markdown-body ul{padding-left:2em}.markdown-body ol.no-list,.markdown-body ul.no-list{list-style-type:none;padding:0}.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul{margin-bottom:0;margin-top:0}.markdown-body li>p{margin-top:16px}.markdown-body li+li{padding-top:.25em}.markdown-body dl{padding:0}.markdown-body dl dt{font-size:1em;font-style:italic;font-weight:700;margin-top:16px;padding:0}.markdown-body dl dd{margin-bottom:16px;padding:0 16px}.markdown-body table{display:block;overflow:auto;width:100%;word-break:normal;word-break:keep-all}.markdown-body table th{font-weight:700}.markdown-body table td,.markdown-body table th{border:1px solid #ddd}.markdown-body table tr{background-color:#fff;border-top:1px solid #ccc}.markdown-body table tr:nth-child(2n){background-color:#f8f8f8}.markdown-body img{background-color:#fff;box-sizing:initial;max-width:100%}.markdown-body img[align=right]{padding-left:20px}.markdown-body img[align=left]{padding-right:20px}.markdown-body .emoji{background-color:initial;max-width:none;vertical-align:text-top}.markdown-body span.frame{display:block;overflow:hidden}.markdown-body span.frame>span{border:1px solid #ddd;display:block;float:left;margin:13px 0 0;overflow:hidden;padding:7px;width:auto}.markdown-body span.frame span img{display:block;float:left}.markdown-body span.frame span span{clear:both;color:#333;display:block;padding:5px 0 0}.markdown-body span.align-center{clear:both;display:block;overflow:hidden}.markdown-body span.align-center>span{display:block;margin:13px auto 0;overflow:hidden;text-align:center}.markdown-body span.align-center span img{margin:0 auto;text-align:center}.markdown-body span.align-right{clear:both;display:block;overflow:hidden}.markdown-body span.align-right>span{display:block;margin:13px 0 0;overflow:hidden;text-align:right}.markdown-body span.align-right span img{margin:0;text-align:right}.markdown-body span.float-left{display:block;float:left;margin-right:13px;overflow:hidden}.markdown-body span.float-left span{margin:13px 0 0}.markdown-body span.float-right{display:block;float:right;margin-left:13px;overflow:hidden}.markdown-body span.float-right>span{display:block;margin:13px auto 0;overflow:hidden;text-align:right}.markdown-body code,.markdown-body tt{background-color:#0000000a;border-radius:3px;font-size:85%;margin:0;padding:.2em 0}.markdown-body code:after,.markdown-body code:before,.markdown-body tt:after,.markdown-body tt:before{content:"\00a0";letter-spacing:-.2em}.markdown-body code br,.markdown-body tt br{display:none}.markdown-body del code{text-decoration:inherit}.markdown-body pre{word-wrap:normal}.markdown-body pre>code{background:#0000;border:0;font-size:100%;margin:0;padding:0;white-space:pre;word-break:normal}.markdown-body .highlight{margin-bottom:16px}.markdown-body .highlight pre{margin-bottom:0;word-break:normal}.markdown-body .highlight pre,.markdown-body pre{border-radius:3px;font-size:85%;line-height:1.45;overflow:auto}.markdown-body:not(.next-editor) pre{padding:16px}.markdown-body pre code,.markdown-body pre tt{word-wrap:normal;background-color:initial;border:0;display:inline;line-height:inherit;margin:0;max-width:auto;overflow:visible;padding:0}.markdown-body pre code:after,.markdown-body pre code:before,.markdown-body pre tt:after,.markdown-body pre tt:before{content:normal}.markdown-body .csv-data td,.markdown-body .csv-data th{font-size:12px;line-height:1;overflow:hidden;padding:5px;text-align:left;white-space:nowrap}.markdown-body .csv-data .blob-line-num{background:#fff;border:0;padding:10px 8px 9px;text-align:right}.markdown-body .csv-data tr{border-top:0}.markdown-body .csv-data th{background:#f8f8f8;border-top:0;font-weight:700}.news .alert .markdown-body blockquote{border:0;padding:0 0 0 40px}.activity-tab .news .alert .commits,.activity-tab .news .markdown-body blockquote{padding-left:0}.task-list-item{list-style-type:none}.task-list-item label{font-weight:400}.task-list-item.enabled label{cursor:pointer}.task-list-item+.task-list-item{margin-top:3px}.task-list-item-checkbox{cursor:default!important;float:left;margin:.31em 0 .2em -1.3em!important;vertical-align:middle}.markdown-alert{border-left-style:solid;border-left-width:4px;color:inherit;margin-bottom:16px;padding:8px 16px}.markdown-alert .markdown-alert-title{align-items:center;display:flex;font-weight:500;line-height:1;white-space:break-spaces}.markdown-body .markdown-alert>*{margin-bottom:0;margin-top:16px}.markdown-body .markdown-alert .selection-popover,.markdown-body .markdown-alert>:first-child{margin-top:0}.markdown-alert.markdown-alert-note{border-left-color:#0969da}.markdown-alert.markdown-alert-note .markdown-alert-title{fill:currentColor;color:#0969da}.markdown-alert.markdown-alert-tip{border-left-color:#1a7f37}.markdown-alert.markdown-alert-tip .markdown-alert-title{fill:currentColor;color:#1a7f37}.markdown-alert.markdown-alert-important{border-left-color:#8250df}.markdown-alert.markdown-alert-important .markdown-alert-title{fill:currentColor;color:#8250df}.markdown-alert.markdown-alert-warning{border-left-color:#9a6700}.markdown-alert.markdown-alert-warning .markdown-alert-title{fill:currentColor;color:#9a6700}.markdown-alert.markdown-alert-caution{border-left-color:#d1242f}.markdown-alert.markdown-alert-caution .markdown-alert-title{fill:currentColor;color:#d1242f}:root[theme=dark] :not([theme])>*>.markdown-body,:root[theme] [theme=dark] .markdown-body{color:#d4d4d8}:root[theme=dark] :not([theme])>*>.markdown-body h1,:root[theme=dark] :not([theme])>*>.markdown-body h2,:root[theme] [theme=dark] .markdown-body h1,:root[theme] [theme=dark] .markdown-body h2{border-bottom-color:#52525b}:root[theme=dark] :not([theme])>*>.markdown-body h6,:root[theme] [theme=dark] .markdown-body h6{color:#a1a1aa}:root[theme=dark] :not([theme])>*>.markdown-body details,:root[theme] [theme=dark] .markdown-body details{background-color:#303036;color:#d4d4d8}:root[theme=dark] :not([theme])>*>.markdown-body details summary::marker:first-child,:root[theme] [theme=dark] .markdown-body details summary::marker:first-child{color:#d4d4d8}:root[theme=dark] :not([theme])>*>.markdown-body details:hover,:root[theme] [theme=dark] .markdown-body details:hover{background:#303036}:root[theme=dark] :not([theme])>*>.markdown-body details code,:root[theme=dark] :not([theme])>*>.markdown-body details[open]:hover,:root[theme] [theme=dark] .markdown-body details code,:root[theme] [theme=dark] .markdown-body details[open]:hover{background-color:#303036}:root[theme=dark] :not([theme])>*>.markdown-body hr,:root[theme] [theme=dark] .markdown-body hr{background-color:#52525b}:root[theme=dark] :not([theme])>*>.markdown-body blockquote,:root[theme] [theme=dark] .markdown-body blockquote{border-left-color:#71717a;color:#a1a1aa}:root[theme=dark] :not([theme])>*>.markdown-body blockquote a span,:root[theme] [theme=dark] .markdown-body blockquote a span{color:#9894f9}:root[theme=dark] :not([theme])>*>.markdown-body a.mention-anchor.user-card-popover,:root[theme] [theme=dark] .markdown-body a.mention-anchor.user-card-popover{background-color:#453aff26;color:#9894f9}:root[theme=dark] :not([theme])>*>.markdown-body ::selection,:root[theme] [theme=dark] .markdown-body ::selection{background-color:#453aff99}:root[theme=dark] :not([theme])>*>.markdown-body .alert.alert-info,:root[theme] [theme=dark] .markdown-body .alert.alert-info{background-color:#38bdf81a;border-left-color:#0ea5e9;color:#38bdf8}:root[theme=dark] :not([theme])>*>.markdown-body .alert.alert-warning,:root[theme] [theme=dark] .markdown-body .alert.alert-warning{background-color:#fbbf241a;border-left-color:#f59e0b;color:#f59e0b}:root[theme=dark] :not([theme])>*>.markdown-body .alert.alert-success,:root[theme] [theme=dark] .markdown-body .alert.alert-success{background-color:#6db19d26;border-left-color:#55b685;color:#6db19d}:root[theme=dark] :not([theme])>*>.markdown-body .alert.alert-danger,:root[theme] [theme=dark] .markdown-body .alert.alert-danger{background-color:#ef444433;border-left-color:#ef4444;color:#f87171}:root[theme=dark] :not([theme])>*>.markdown-body .mark,:root[theme=dark] :not([theme])>*>.markdown-body mark,:root[theme] [theme=dark] .markdown-body .mark,:root[theme] [theme=dark] .markdown-body mark{background-color:#fbbf241a;color:#f59e0b}:root[theme=dark] :not([theme])>*>.markdown-body .mark span,:root[theme=dark] :not([theme])>*>.markdown-body mark span,:root[theme] [theme=dark] .markdown-body .mark span,:root[theme] [theme=dark] .markdown-body mark span{color:#fbbf24}:root[theme=dark] :not([theme])>*>.markdown-body .highlight pre,:root[theme=dark] :not([theme])>*>.markdown-body pre,:root[theme] [theme=dark] .markdown-body .highlight pre,:root[theme] [theme=dark] .markdown-body pre{background-color:#303036;color:#a1a1aa}:root[theme=dark] :not([theme])>*>.markdown-body .style .token.string,:root[theme=dark] :not([theme])>*>.markdown-body .token.entity,:root[theme=dark] :not([theme])>*>.markdown-body .token.operator,:root[theme=dark] :not([theme])>*>.markdown-body .token.url,:root[theme=dark] :not([theme])>*>.markdown-body.language-css,:root[theme=dark] :not([theme])>*>.markdown-body.token.string,:root[theme] [theme=dark] .markdown-body .style .token.string,:root[theme] [theme=dark] .markdown-body .token.entity,:root[theme] [theme=dark] .markdown-body .token.operator,:root[theme] [theme=dark] .markdown-body .token.url,:root[theme] [theme=dark] .markdown-body.language-css,:root[theme] [theme=dark] .markdown-body.token.string{background:none}:root[theme=dark] :not([theme])>*>.markdown-body :not(pre)>code,:root[theme] [theme=dark] .markdown-body :not(pre)>code{background-color:#3f3f46}:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-tag,:root[theme] [theme=dark] .markdown-body code .hljs-tag{color:#d4d4d8}:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-keyword,:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-selector-tag,:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-type,:root[theme=dark] :not([theme])>*>.markdown-body code .token.boolean,:root[theme=dark] :not([theme])>*>.markdown-body code .token.constant,:root[theme=dark] :not([theme])>*>.markdown-body code .token.deleted,:root[theme=dark] :not([theme])>*>.markdown-body code .token.number,:root[theme=dark] :not([theme])>*>.markdown-body code .token.property,:root[theme=dark] :not([theme])>*>.markdown-body code .token.symbol,:root[theme=dark] :not([theme])>*>.markdown-body code .token.tag,:root[theme] [theme=dark] .markdown-body code .hljs-keyword,:root[theme] [theme=dark] .markdown-body code .hljs-selector-tag,:root[theme] [theme=dark] .markdown-body code .hljs-type,:root[theme] [theme=dark] .markdown-body code .token.boolean,:root[theme] [theme=dark] .markdown-body code .token.constant,:root[theme] [theme=dark] .markdown-body code .token.deleted,:root[theme] [theme=dark] .markdown-body code .token.number,:root[theme] [theme=dark] .markdown-body code .token.property,:root[theme] [theme=dark] .markdown-body code .token.symbol,:root[theme] [theme=dark] .markdown-body code .token.tag{color:#ff70b4}:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-attribute,:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-bullet,:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-literal,:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-number,:root[theme=dark] :not([theme])>*>.markdown-body code .hljs-symbol,:root[theme=dark] :not([theme])>*>.markdown-body code .token.atrule,:root[theme=dark] :not([theme])>*>.markdown-body code .token.attr-value,:root[theme=dark] :not([theme])>*>.markdown-body code .token.keyword,:root[theme] [theme=dark] .markdown-body code .hljs-attribute,:root[theme] [theme=dark] .markdown-body code .hljs-bullet,:root[theme] [theme=dark] .markdown-body code .hljs-literal,:root[theme] [theme=dark] .markdown-body code .hljs-number,:root[theme] [theme=dark] .markdown-body code .hljs-symbol,:root[theme] [theme=dark] .markdown-body code .token.atrule,:root[theme] [theme=dark] .markdown-body code .token.attr-value,:root[theme] [theme=dark] .markdown-body code .token.keyword{color:#9894f9}:root[theme=dark] :not([theme])>*>.markdown-body pre.part.plugin-rendered,:root[theme] [theme=dark] .markdown-body pre.part.plugin-rendered{background-color:#fff;color:#000}:root[theme=dark] :not([theme])>*>.markdown-body table,:root[theme] [theme=dark] .markdown-body table{border-color:#52525b}:root[theme=dark] :not([theme])>*>.markdown-body table thead tr,:root[theme] [theme=dark] .markdown-body table thead tr{background-color:#303036;border-bottom-color:#52525b}:root[theme=dark] :not([theme])>*>.markdown-body table td,:root[theme=dark] :not([theme])>*>.markdown-body table th,:root[theme] [theme=dark] .markdown-body table td,:root[theme] [theme=dark] .markdown-body table th{border-left-color:#52525b;border-top-color:#52525b}:root[theme=dark] :not([theme])>*>.markdown-body table tbody tr,:root[theme=dark] :not([theme])>*>.markdown-body table tr:nth-child(2n),:root[theme] [theme=dark] .markdown-body table tbody tr,:root[theme] [theme=dark] .markdown-body table tr:nth-child(2n){background-color:#27272a}:root[theme=light] :not([theme])>*>.markdown-body,:root[theme] [theme=light] .markdown-body{color:#3f3f46}:root[theme=light] :not([theme])>*>.markdown-body h1,:root[theme=light] :not([theme])>*>.markdown-body h2,:root[theme] [theme=light] .markdown-body h1,:root[theme] [theme=light] .markdown-body h2{border-bottom-color:#e4e4e7}:root[theme=light] :not([theme])>*>.markdown-body h6,:root[theme] [theme=light] .markdown-body h6{color:#71717a}:root[theme=light] :not([theme])>*>.markdown-body iframe,:root[theme] [theme=light] .markdown-body iframe{border:1px solid #e4e4e7;box-sizing:border-box}:root[theme=light] :not([theme])>*>.markdown-body details,:root[theme] [theme=light] .markdown-body details{background-color:#f4f4f5}:root[theme=light] :not([theme])>*>.markdown-body details:hover,:root[theme] [theme=light] .markdown-body details:hover{background:#e4e4e7}:root[theme=light] :not([theme])>*>.markdown-body details[open]:hover,:root[theme] [theme=light] .markdown-body details[open]:hover{background-color:#f4f4f5}:root[theme=light] :not([theme])>*>.markdown-body details code,:root[theme] [theme=light] .markdown-body details code{background-color:#e4e4e7}:root[theme=light] :not([theme])>*>.markdown-body hr,:root[theme] [theme=light] .markdown-body hr{background-color:#d4d4d8}:root[theme=light] :not([theme])>*>.markdown-body blockquote,:root[theme] [theme=light] .markdown-body blockquote{border-left-color:#e4e4e7;color:#71717a}:root[theme=light] :not([theme])>*>.markdown-body blockquote a span,:root[theme] [theme=light] .markdown-body blockquote a span{color:#564dff}:root[theme=light] :not([theme])>*>.markdown-body a.mention-anchor.user-card-popover,:root[theme] [theme=light] .markdown-body a.mention-anchor.user-card-popover{background-color:#ecebfe;color:#564dff}:root[theme=light] :not([theme])>*>.markdown-body ::selection,:root[theme] [theme=light] .markdown-body ::selection{background-color:#cccafc}:root[theme=light] :not([theme])>*>.markdown-body .alert.alert-info,:root[theme] [theme=light] .markdown-body .alert.alert-info{background-color:#e0f2fe;border-left-color:#0284c7;color:#0284c7}:root[theme=light] :not([theme])>*>.markdown-body .alert.alert-warning,:root[theme] [theme=light] .markdown-body .alert.alert-warning{background-color:#fef3c799;border-left-color:#f59e0b;color:#f59e0b}:root[theme=light] :not([theme])>*>.markdown-body .alert.alert-success,:root[theme] [theme=light] .markdown-body .alert.alert-success{background-color:#d9f9e5;border-left-color:#43946c;color:#43946c}:root[theme=light] :not([theme])>*>.markdown-body .alert.alert-danger,:root[theme] [theme=light] .markdown-body .alert.alert-danger{background-color:#fee2e299;border-left-color:#ef4444;color:#ef4444}:root[theme=light] :not([theme])>*>.markdown-body .mark,:root[theme=light] :not([theme])>*>.markdown-body mark,:root[theme] [theme=light] .markdown-body .mark,:root[theme] [theme=light] .markdown-body mark{background-color:#fef3c799;color:#f59e0b}:root[theme=light] :not([theme])>*>.markdown-body .mark span,:root[theme=light] :not([theme])>*>.markdown-body mark span,:root[theme] [theme=light] .markdown-body .mark span,:root[theme] [theme=light] .markdown-body mark span{color:#f59e0b}:root[theme=light] :not([theme])>*>.markdown-body .highlight pre,:root[theme=light] :not([theme])>*>.markdown-body pre,:root[theme] [theme=light] .markdown-body .highlight pre,:root[theme] [theme=light] .markdown-body pre{background-color:#f4f4f5}:root[theme=light] :not([theme])>*>.markdown-body pre.part.plugin-rendered,:root[theme] [theme=light] .markdown-body pre.part.plugin-rendered{background-color:inherit;color:inherit}:root[theme=light] :not([theme])>*>.markdown-body :not(pre)>code,:root[theme] [theme=light] .markdown-body :not(pre)>code{background-color:#0000000a}:root[theme=light] :not([theme])>*>.markdown-body table,:root[theme] [theme=light] .markdown-body table{border-color:#e4e4e7}:root[theme=light] :not([theme])>*>.markdown-body table thead tr,:root[theme] [theme=light] .markdown-body table thead tr{background-color:#f4f4f5;border-bottom-color:#d4d4d8}:root[theme=light] :not([theme])>*>.markdown-body table td,:root[theme=light] :not([theme])>*>.markdown-body table th,:root[theme] [theme=light] .markdown-body table td,:root[theme] [theme=light] .markdown-body table th{border-left-color:#e4e4e7;border-top-color:#e4e4e7}:root[theme=light] :not([theme])>*>.markdown-body table tbody tr,:root[theme=light] :not([theme])>*>.markdown-body table tr:nth-child(2n),:root[theme] [theme=light] .markdown-body table tbody tr,:root[theme] [theme=light] .markdown-body table tr:nth-child(2n){background-color:#fdfdfd}.markdown-body{font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;max-width:758px;overflow:visible!important;padding-bottom:40px;padding-top:40px;position:relative}.markdown-body>*{max-width:100%;overflow:auto}.markdown-body .alert a,.markdown-body a{color:var(--hmd-tw-link-text-default)}.markdown-body .alert a:focus,.markdown-body .alert a:hover,.markdown-body a:focus,.markdown-body a:hover{color:var(--hmd-tw-link-text-hover)}.markdown-body .alert a:hover,.markdown-body a:hover{text-decoration-thickness:2px;text-underline-offset:4px}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5{font-family:Readex Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;font-weight:700}.markdown-body h1,.markdown-body h2{border-bottom:1px solid}.markdown-body iframe,.markdown-body img{background-color:initial;border-radius:6px;margin:.5rem 0}.markdown-body iframe{max-width:100%;width:728px}.markdown-body details{border-radius:4px;margin-bottom:.5rem;padding:.5rem 1rem}.markdown-body details:hover{transition:all .1s}.markdown-body details summary+p{margin-top:.5rem}.markdown-body details p:last-child{margin-bottom:0}.markdown-body hr{height:2px}.markdown-body img.emoji{border:none;height:20px;vertical-align:middle;width:20px}.markdown-body li small{color:#a1a1aa}.markdown-body blockquote{border-left:3px solid}.markdown-body blockquote .small,.markdown-body blockquote small,.markdown-body li small{display:initial;font-size:85%}.markdown-body a.mention-anchor:before{content:"";margin-right:0}.markdown-body a.mention-anchor.user-card-popover{border-radius:4px;padding:1px 4px}.markdown-body .alert{border:none;border-radius:4px;margin-top:10px}.markdown-body .alert h2,.markdown-body .alert h3,.markdown-body .alert h4,.markdown-body .alert h5,.markdown-body .alert h6{margin-top:0}.markdown-body .alert h2{border:none}.markdown-body .alert.alert-danger,.markdown-body .alert.alert-info,.markdown-body .alert.alert-success,.markdown-body .alert.alert-warning{border-left:3px solid}.markdown-body .highlight pre,.markdown-body .mark,.markdown-body mark,.markdown-body pre{border-radius:4px}.markdown-body pre.part.abc,.markdown-body pre.part.flow-chart,.markdown-body pre.part.fretboard,.markdown-body pre.part.graphviz,.markdown-body pre.part.mermaid,.markdown-body pre.part.sequence-diagram,.markdown-body pre.part.vega-embed{border-radius:4px;max-width:100%;overflow:auto}.markdown-body table{border:1px solid;border-radius:4px;width:fit-content}.markdown-body table thead tr{border-bottom:1px solid;border-top:none}.markdown-body table tbody tr,.markdown-body table thead tr th{border-top:none}.markdown-body table tbody tr td:first-child,.markdown-body table thead,.markdown-body table thead th:first-child{border-left:none}.markdown-body table td,.markdown-body table th{border:1px solid;border-bottom:none;border-right:none;padding:6px 13px}.markdown-body.next-editor{overflow-x:hidden!important}.markdown-body pre{border:inherit}.markdown-body code{color:inherit}html[lang^=ja] .markdown-body code code,html[lang^=ja] .markdown-body code kbd,html[lang^=ja] .markdown-body code pre{font-family:Source Code Pro,Consolas,monaco,Meiryo,ＭＳ ゴシック,MS Gothic,monospace}html[lang=zh-tw] .markdown-body code code,html[lang=zh-tw] .markdown-body code kbd,html[lang=zh-tw] .markdown-body code pre{font-family:Source Code Pro,Consolas,monaco,Microsoft JhengHei,微軟正黑,monospace}html[lang=zh-cn] .markdown-body code code,html[lang=zh-cn] .markdown-body code kbd,html[lang=zh-cn] .markdown-body code pre{font-family:Source Code Pro,Consolas,monaco,Microsoft YaHei,微软雅黑,monospace}html .markdown-body code[lang^=ja] code,html .markdown-body code[lang^=ja] kbd,html .markdown-body code[lang^=ja] pre{font-family:Source Code Pro,Consolas,monaco,Meiryo,ＭＳ ゴシック,MS Gothic,monospace}html .markdown-body code[lang=zh-tw] code,html .markdown-body code[lang=zh-tw] kbd,html .markdown-body code[lang=zh-tw] pre{font-family:Source Code Pro,Consolas,monaco,Microsoft JhengHei,微軟正黑,monospace}html .markdown-body code[lang=zh-cn] code,html .markdown-body code[lang=zh-cn] kbd,html .markdown-body code[lang=zh-cn] pre{font-family:Source Code Pro,Consolas,monaco,Microsoft YaHei,微软雅黑,monospace}.markdown-body pre code .wrapper{display:-moz-inline-flex;display:-ms-inline-flex;display:-o-inline-flex;display:inline-flex}.markdown-body pre code .gutter{float:left;overflow:hidden;-webkit-user-select:none;user-select:none}.markdown-body pre code .gutter.linenumber{border-right:2px solid #766df8;box-sizing:initial;color:#a1a1aa;cursor:default;display:inline-block;min-width:20px;padding:0 8px 0 0;position:relative;text-align:right;z-index:4}.markdown-body pre code .gutter.linenumber>span:before{content:attr(data-linenumber)}.markdown-body pre code .code{float:left;margin:0 0 0 16px}.markdown-body .gist .line-numbers{border-bottom:none;border-left:none;border-top:none}.markdown-body .gist .line-data{border:none}.markdown-body .gist table{border-collapse:inherit!important;border-spacing:0}.markdown-body code[data-gist-id]{background:none;padding:0}.markdown-body code[data-gist-id]:after,.markdown-body code[data-gist-id]:before{content:""}.markdown-body code[data-gist-id] .blob-num{border:unset}.markdown-body code[data-gist-id] table{margin-bottom:unset;overflow:unset}.markdown-body code[data-gist-id] table tr{background:unset}.markdown-body[dir=rtl] pre{direction:ltr}.markdown-body[dir=rtl] code{direction:ltr;unicode-bidi:embed}.markdown-body .alert{display:flex;flex-direction:column;gap:16px}.markdown-body .alert>*{margin:0}.markdown-body pre.abc,.markdown-body pre.flow-chart,.markdown-body pre.graphviz,.markdown-body pre.mermaid,.markdown-body pre.sequence-diagram,.markdown-body pre.vega{background-color:inherit;border-radius:0;overflow:visible;text-align:center;white-space:inherit}.markdown-body pre.abc>code,.markdown-body pre.flow-chart>code,.markdown-body pre.graphviz>code,.markdown-body pre.mermaid>code,.markdown-body pre.sequence-diagram>code,.markdown-body pre.vega>code{text-align:left}.markdown-body pre.abc>svg,.markdown-body pre.flow-chart>svg,.markdown-body pre.graphviz>svg,.markdown-body pre.mermaid>svg,.markdown-body pre.sequence-diagram>svg,.markdown-body pre.vega>svg{height:100%;max-width:100%}.markdown-body pre>code.wrap{word-wrap:break-word;white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap}.markdown-body pre.pseudocode{white-space-collapse:collapse}.markdown-body summary{display:list-item}.markdown-body summary:focus{outline:none}.markdown-body details summary{cursor:pointer}.markdown-body details:not([open])>:not(summary){display:none}.markdown-body figure{margin:1em 40px}.markdown-body .mark,.markdown-body mark{background-color:#fff1a7}:root[theme] .markdown-body{line-height:1.75}:root[theme] .markdown-body ::marker,:root[theme] .markdown-body code{color:var(--hmd-tw-text-default)}:root[theme] .markdown-body h1,:root[theme] .markdown-body h2,:root[theme] .markdown-body h3,:root[theme] .markdown-body h4,:root[theme] .markdown-body h5,:root[theme] .markdown-body h6{overflow:visible}:root[theme] .markdown-body h1 .octicon-link,:root[theme] .markdown-body h2 .octicon-link,:root[theme] .markdown-body h3 .octicon-link,:root[theme] .markdown-body h4 .octicon-link,:root[theme] .markdown-body h5 .octicon-link,:root[theme] .markdown-body h6 .octicon-link{color:var(--hmd-tw-text-subtle)}:root[theme] .markdown-body .anchor{left:0;margin-left:0;position:absolute}:root[theme] .markdown-body .gist table{border-color:inherit}:root[theme] .markdown-body .gist table thead tr{background-color:inherit;border-bottom-color:inherit}:root[theme] .markdown-body .gist table td,:root[theme] .markdown-body .gist table th{border-left-color:inherit;border-top-color:inherit}:root[theme] .markdown-body .gist table tbody tr,:root[theme] .markdown-body .gist table tr:nth-child(2n){background-color:inherit}:root[theme] .markdown-body ol ol,:root[theme] .markdown-body ol ul,:root[theme] .markdown-body ul ol,:root[theme] .markdown-body ul ul{margin-bottom:12px;margin-top:6px}@media (max-width:767px){.markdown-body h1{font-size:1.6em}.markdown-body h2{font-size:1.4em}.markdown-body h3{font-size:1.125em}}.vimeo,.youtube{background-color:#000;background-position:50%;background-repeat:no-repeat;background-size:contain;cursor:pointer;display:table;overflow:hidden;text-align:center}.vimeo,.youtube{position:relative;width:100%}.youtube{padding-bottom:56.25%}.vimeo img{object-fit:contain;width:100%;z-index:0}.youtube img{object-fit:cover;z-index:0}.vimeo iframe,.youtube iframe,.youtube img{height:100%;left:0;position:absolute;top:0;width:100%}.vimeo iframe,.youtube iframe{vertical-align:middle;z-index:1}.vimeo .icon,.youtube .icon{color:#fff;height:auto;left:50%;opacity:.3;position:absolute;top:50%;transform:translate(-50%,-50%);transition:opacity .2s;width:auto;z-index:0}.vimeo:hover .icon,.youtube:hover .icon{opacity:.6;transition:opacity .2s}.slideshare .inner,.speakerdeck .inner{position:relative;width:100%}.slideshare .inner iframe,.speakerdeck .inner iframe{bottom:0;height:100%;left:0;position:absolute;right:0;top:0;width:100%}.figma{display:table;padding-bottom:56.25%;position:relative;width:100%}.figma iframe{border:1px solid #eee;bottom:0;height:100%;left:0;position:absolute;right:0;top:0;width:100%}.markmap-container{height:300px}.markmap-container>svg{height:100%;width:100%}.MJX_Assistive_MathML{display:none}#MathJax_Message{z-index:1000!important}.ui-infobar{color:var(--hmd-tw-text-default);font-size:14px;margin:25px auto -25px;max-width:760px;position:relative;z-index:2}.ui-infobar .ui-user-icon.small{height:18px;margin:2px;vertical-align:top;width:18px}.toc .invisable-node{list-style-type:none}.ui-toc{bottom:20px;position:fixed;z-index:998}.ui-toc.both-mode{margin-left:2px}.ui-toc.both-mode .ui-toc-label{border-bottom-left-radius:0;border-top-left-radius:0;height:40px;padding:10px 4px}:root[theme=light] :not([theme])>*>.ui-toc .ui-toc-label,:root[theme] [theme=light] .ui-toc-label{background-color:#fdfdfd;border-color:#d4d4d8;color:#a1a1aa}:root[theme=light] :not([theme])>*>.ui-toc .ui-toc-label:active,:root[theme=light] :not([theme])>*>.ui-toc .ui-toc-label:hover,:root[theme] [theme=light] .ui-toc-label:active,:root[theme] [theme=light] .ui-toc-label:hover{background-color:#f4f4f5;border-color:#d4d4d8;color:#a1a1aa}:root[theme=dark] :not([theme])>*>.ui-toc .ui-toc-label,:root[theme=dark] :not([theme])>*>.ui-toc .ui-toc-label:active,:root[theme=dark] :not([theme])>*>.ui-toc .ui-toc-label:hover,:root[theme] [theme=dark] .ui-toc-label,:root[theme] [theme=dark] .ui-toc-label:active,:root[theme] [theme=dark] .ui-toc-label:hover{background-color:#303036;border-color:#52525b;color:#a1a1aa}:root[theme=dark] :not([theme])>*>.ui-toc.both-mode .ui-toc-label,:root[theme] [theme=dark] .ui-toc.both-mode .ui-toc-label{background-color:#303036;border-color:#3f3f46;color:#d4d4d8}:root[theme=dark] :not([theme])>*>.ui-toc.both-mode .ui-toc-label:hover,:root[theme] [theme=dark] .ui-toc.both-mode .ui-toc-label:hover{background-color:#52525b}.ui-toc-label{border:1px solid;transition:opacity .2s}.ui-toc .open .ui-toc-label,.ui-toc-label:hover{opacity:1;transition:opacity .2s}.ui-toc-dropdown{letter-spacing:normal;margin-bottom:20px;margin-top:20px;max-height:70vh;max-width:45vw;overflow:auto;padding-left:10px;padding-right:10px;text-align:inherit;width:25vw}.ui-toc-dropdown.dropdown-menu{box-shadow:0 3px 15px 0 #00000026}.ui-toc-dropdown>.toc{max-height:calc(70vh - 100px);overflow:auto}.ui-toc-dropdown[dir=rtl] .nav{letter-spacing:.0029em;padding-right:0}.ui-toc-dropdown a{overflow:hidden;text-overflow:ellipsis;white-space:pre}.ui-toc-dropdown .nav>li>a{color:var(--hmd-tw-text-subtle);display:block;font-size:12px;font-weight:500;line-height:16px;padding:4px 20px}.ui-toc-dropdown .nav>li:first-child:last-child>ul,.ui-toc-dropdown .toc.expand ul{display:block}.ui-toc-dropdown .nav>li>a:focus,.ui-toc-dropdown .nav>li>a:hover{background-color:initial;border-color:var(--hmd-tw-border-bold);border-style:solid;border-width:0 0 0 1px;color:#000;color:var(--hmd-tw-text-emphasize);padding-left:19px;text-decoration:none}.ui-toc-dropdown[dir=rtl] .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav>li>a:hover{border-left:none;border-right:1px solid #000;padding-right:19px}.ui-toc-dropdown .nav>.active:focus>a,.ui-toc-dropdown .nav>.active:hover>a,.ui-toc-dropdown .nav>.active>a{background-color:initial;border-color:var(--hmd-tw-border-bold);border-style:solid;border-width:0 0 0 2px;color:var(--hmd-tw-text-emphasize);font-weight:600;padding-left:18px}.ui-toc-dropdown[dir=rtl] .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav>.active>a{border-width:0 2px 0 medium;border-left:0;border-color:var(--hmd-tw-border-bold);border-style:solid;padding-right:18px}.ui-toc-dropdown .nav .nav{display:none;padding-bottom:10px}.ui-toc-dropdown .nav>.active>ul{display:block}.ui-toc-dropdown .nav .nav>li>a{font-size:12px;font-weight:400;padding-bottom:1px;padding-left:30px;padding-top:1px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a{padding-right:30px}.ui-toc-dropdown .nav .nav>li>ul>li>a{font-size:12px;font-weight:400;padding-bottom:1px;padding-left:40px;padding-top:1px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a{padding-right:40px}.ui-toc-dropdown .nav .nav>li>a:focus,.ui-toc-dropdown .nav .nav>li>a:hover{padding-left:29px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:hover{padding-right:29px}.ui-toc-dropdown .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown .nav .nav>li>ul>li>a:hover{padding-left:39px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:hover{padding-right:39px}.ui-toc-dropdown .nav .nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>a{font-weight:500;padding-left:28px}.ui-toc-dropdown[dir=rtl] .nav .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>a{padding-right:28px}.ui-toc-dropdown .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active>a{font-weight:500;padding-left:38px}.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active>a{padding-right:38px}.ui-affix-toc{max-height:70vh;max-width:15vw;overflow:auto;position:fixed;top:0}.back-to-top,.expand-toggle,.go-to-bottom{color:var(--hmd-tw-text-subtle);display:block;font-size:12px;font-weight:500;line-height:16px;margin-left:10px;margin-top:10px;padding:2px 10px}.back-to-top:focus,.back-to-top:hover,.expand-toggle:focus,.expand-toggle:hover,.go-to-bottom:focus,.go-to-bottom:hover{color:var(--hmd-tw-text-primary);text-decoration:none}.back-to-top,.go-to-bottom{margin-top:0}.ui-user-icon{background-position:50%;background-repeat:no-repeat;background-size:cover;border-radius:50%;display:block;height:20px;margin-bottom:2px;margin-right:5px;margin-top:2px;width:20px}.ui-user-icon.small{display:inline-block;height:18px;margin:0 0 .2em;vertical-align:middle;width:18px}.ui-infobar>small>span{line-height:22px}.ui-infobar>small .dropdown{display:inline-block}.ui-infobar>small .dropdown a:focus,.ui-infobar>small .dropdown a:hover{text-decoration:none}.ui-more-info{cursor:pointer;vertical-align:middle}.ui-connectedGithub{line-height:23px;white-space:nowrap}.ui-connectedGithub a.file-path{text-decoration:none}.ui-connectedGithub a.file-path:active,.ui-connectedGithub a.file-path:hover{text-decoration:underline}.unselectable{-webkit-user-select:none;-o-user-select:none;user-select:none}.selectable{-webkit-user-select:text;-o-user-select:text;user-select:text}.inline-spoiler-section{cursor:pointer}.inline-spoiler-section .spoiler-text{background-color:#333;border-radius:2px}.inline-spoiler-section .spoiler-text>*{opacity:0}.inline-spoiler-section .spoiler-img{filter:blur(10px)}.inline-spoiler-section.raw{background-color:#333;border-radius:2px}.inline-spoiler-section.raw>*{opacity:0}.inline-spoiler-section.unveil{cursor:auto}.inline-spoiler-section.unveil .spoiler-text{background-color:#3333331a}.inline-spoiler-section.unveil .spoiler-text>*{opacity:1}.inline-spoiler-section.unveil .spoiler-img{filter:none}@media print{blockquote,div,img,pre,table{page-break-inside:avoid!important}a[href]:after{font-size:12px!important}}.markdown-body.slides{color:#222;position:relative;z-index:1}.markdown-body.slides:before{background-color:currentColor;bottom:0;box-shadow:0 0 0 50vw;content:"";display:block;left:0;position:absolute;right:0;top:0;z-index:-1}.markdown-body.slides section[data-markdown]{background-color:#fff;margin-bottom:1.5em;position:relative;text-align:center}.markdown-body.slides section[data-markdown] code{text-align:left}.markdown-body.slides section[data-markdown]:before{content:"";display:block;padding-bottom:56.23%}.markdown-body.slides section[data-markdown]>div:first-child{left:1em;max-height:100%;overflow:hidden;position:absolute;right:1em;top:50%;transform:translateY(-50%)}.markdown-body.slides section[data-markdown]>ul{display:inline-block}.markdown-body.slides>section>section+section:after{border:3px solid #777;content:"";height:1.5em;position:absolute;right:1em;top:-1.5em}.site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,sans-serif}html[lang^=ja] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ ゴシック,sans-serif}html[lang=zh-tw] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] .site-ui-font{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}body{font-smoothing:subpixel-antialiased!important;-webkit-font-smoothing:subpixel-antialiased!important;-moz-osx-font-smoothing:auto!important;-webkit-overflow-scrolling:touch;font-family:Source Sans Pro,Helvetica,Arial,sans-serif;letter-spacing:.025em}html[lang^=ja] body{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ ゴシック,sans-serif}html[lang=zh-tw] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}abbr[title]{border-bottom:none;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted}abbr[data-original-title],abbr[title]{cursor:help}body.modal-open{overflow-y:auto;padding-right:0!important}svg{text-shadow:none}
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha256-3Jy/GbSLrg0o9y5Z5n1uw0qxZECH7C6OQpVBgNFYa0g=" crossorigin="anonymous"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" integrity="sha256-g6iAfvZp+nDQ2TdTR/VVKJf3bGro4ub5fvWSWVRi2NE=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js" integrity="sha256-8E4Is26QH0bD52WoQpcB+R/tcWQtpzlCojrybUd7Mxo=" crossorigin="anonymous"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="false"><p><img src="https://hackmd.io/_uploads/Bk0UcfrtC.png" alt="aceLogo" class="offline-handled error-handled" loading="lazy"></p><h1 id="-SOMATIC-VARIANT-DETECTION-IN-CANCER-GENOME-" data-id="-SOMATIC-VARIANT-DETECTION-IN-CANCER-GENOME-"><a class="anchor hidden-xs" href="#-SOMATIC-VARIANT-DETECTION-IN-CANCER-GENOME-" title="-SOMATIC-VARIANT-DETECTION-IN-CANCER-GENOME-"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><font color="green"><span> </span><strong><span>SOMATIC VARIANT DETECTION IN CANCER GENOME</span></strong><span> </span></font></h1><hr><h2 id="STEP1-PRE-PROCESSING" data-id="STEP1-PRE-PROCESSING"><a class="anchor hidden-xs" href="#STEP1-PRE-PROCESSING" title="STEP1-PRE-PROCESSING"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><strong><span>STEP1:</span></strong><span> </span><font color="violet"><span>PRE-PROCESSING</span></font></h2><hr><h2 id="STEP2-ALIGNMENT-TO-THE-REFERENCE-AND-PREPARING-BAM-FILES-FOR-VARIANT-CALLING" data-id="STEP2-ALIGNMENT-TO-THE-REFERENCE-AND-PREPARING-BAM-FILES-FOR-VARIANT-CALLING"><a class="anchor hidden-xs" href="#STEP2-ALIGNMENT-TO-THE-REFERENCE-AND-PREPARING-BAM-FILES-FOR-VARIANT-CALLING" title="STEP2-ALIGNMENT-TO-THE-REFERENCE-AND-PREPARING-BAM-FILES-FOR-VARIANT-CALLING"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><strong><span>STEP2:</span></strong><span> </span><font color="violet"><span>ALIGNMENT TO THE REFERENCE AND PREPARING BAM FILES FOR VARIANT CALLING</span></font></h2><hr><h3 id="Tools-Involved" data-id="Tools-Involved"><a class="anchor hidden-xs" href="#Tools-Involved" title="Tools-Involved"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><span>Tools Involved:</span></h3><blockquote>
+<blockquote>
+<ul>
+<li><font color="red"><span>BWA</span></font></li><font color="red">
+<li><span>Samtools</span></li>
+</font><li><font color="red"><span>GATK</span>
+</font></li>
+</ul>
+</blockquote>
+</blockquote><h3 id="2a-Align-Reads-To-The-Reference" data-id="2a-Align-Reads-To-The-Reference"><a class="anchor hidden-xs" href="#2a-Align-Reads-To-The-Reference" title="2a-Align-Reads-To-The-Reference"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><font color="blue"><span>2(a): Align Reads To The Reference</span></font></h3><hr><blockquote>
+<p><span>This process involves mapping sequencing reads to their corresponding positions on a reference genome purposely to determine where they originate from within the genome</span></p>
+<p><span>A number of tools have been developed to perform reads alignment to the reference genome.</span>
+<span>Some of these include:</span></p>
+<blockquote>
+<ul>
+<li><span>BWA (Burrows-Wheeler Aligner)</span></li>
+<li><span>Bowtie</span></li>
+<li><span>HISAT2 (Hierarchical Indexing for Spliced Alignment of Transcripts)</span></li>
+<li><span>STAR (Spliced Transcripts Alignment to a Reference)</span></li>
+<li><span>Minimap2</span></li>
+<li><span>Novoalign</span></li>
+<li><span>Subread</span></li>
+</ul>
+</blockquote>
+</blockquote><blockquote>
+<p><span>Here we shall use </span><font color="blue"><span>BWA</span></font><span> due to its speed, accuracy and efficiency in handling short read sequencing errors and small indels.</span></p>
+<p><font color="blue"><strong><span>BWA</span></strong></font><span> is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.</span>
+<span>It consists of three algorithms: </span><font color="blue"><em><span>BWA-backtrack</span></em></font><span>, </span><font color="blue"><em><span>BWA-SW</span></em></font><span> and </span><font color="blue"><em><span>BWA-MEM</span></em></font><span>.</span>
+<span>The first algorithm is designed for Illumina sequence reads up to 100bp, while the rest two for longer sequences ranged from 70bp to 1Mbp.</span>
+<span>BWA-MEM and BWA-SW share similar features such as long-read support and split alignment, but </span><mark><span> </span><font color="blue"><em><strong><span>BWA-MEM</span></strong></em></font><span>, which is the latest, is generally recommended for highquality queries as it is faster and more accurate</span></mark><span>.</span>
+<span>BWA-MEM also has better performance than BWAbacktrack for 70-100bp Illumina reads.</span></p>
+</blockquote><div class="alert alert-success">
+<p><span>We shall therefore use </span><strong><span>BWA MEM</span></strong><span> to perform alignment</span></p>
+</div><blockquote>
+<p><span>Before performing the alignment, the reference </span><font color="red"><strong><span>must</span></strong></font><span> first be </span><font color="red"><strong><span>Indexed</span></strong></font><span>.</span></p>
+<ul>
+<li><span>This enables fast, efficient, and accurate alignment of sequencing reads by creating a searchable data structure that optimizes memory usage and computational load.</span>
+<span>This is done using </span><font color="blue"><strong><span>bwa index</span></strong></font><span> command as below.</span></li>
+</ul>
+</blockquote><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span></div><div class="code">bwa index Homo_sapiens_assembly38.fasta
+</div></div></code></pre><blockquote>
+<p><span>However, you can download the human reference genome build 38 </span><mark><span>(Homo_sapiens_assembly38.fasta)</span></mark><span> and it's fasta index </span><mark><span>(Homo_sapiens_assembly38.fasta.fai)</span></mark><span> from </span><font color="green"><strong><span>google cloud</span></strong></font><span> following this </span><a href="https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0;tab=objects?prefix=&amp;forceOnObjectsSortingFiltering=false" target="_blank" rel="noopener"><strong><span>LINK</span></strong></a></p>
+<p><span>Alternatively, you can download them by running the following </span><em><strong><span>commands:</span></strong></em></p>
+</blockquote><div class="alert alert-success">
+<p><span>Download the Human Refernce Genome Build 38 from google cloud</span></p>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span></div><div class="code">wget \
+    -P ./reads \
+    https://storage.googleapis.com/genomics-public-data/resources/broad/hg38/v0/Homo_sapiens_assembly38.fasta
+</div></div></code></pre><div class="alert alert-success">
+<p><span>Download the corresponding fasta index file</span></p>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span></div><div class="code">wget \
+    -P ./reads \
+    https://storage.googleapis.com/genomics-public-data/resources/broad/hg38/v0/Homo_sapiens_assembly38.fasta.fai
+</div></div></code></pre><blockquote>
+<p><span>The </span><font color="red"><em><strong><span>-P</span></strong></em></font><span> option in the </span><font color="red"><em><strong><span>wget</span></strong></em></font><span> command is used to specify the directory to which the file should be downloaded, in this we are downloading the reference into the directory called reads which must be present in the our working directory before running the wget command. When the option is not specified, the reference is downloaded in the current working directory.</span></p>
+</blockquote><div class="alert alert-success">
+<p><img class="emoji offline-handled error-handled" alt=":green_book:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/green_book.png"><span> Rember that in </span><strong><span>STEP ONE</span></strong><span> we did preprocessing where we trimmed reads to remove poor quality ones as well as sequencing adapters. We saved our trimmed reads in a directory called </span><mark><span>trim</span></mark>
+<img class="emoji offline-handled error-handled" alt=":desktop_computer:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/desktop_computer.png"><span> Here you are to align those trimmed reads to the reference genome which you have just obtained.</span></p>
+</div><div class="alert alert-warning">
+<p><img class="emoji offline-handled error-handled" alt=":no_entry_sign:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/no_entry_sign.png"><span> It is better and much easier to work with </span><font color="purple"><strong><span>sample IDs/basename</span></strong></font><span> other than the full </span><font color="purple"><strong><span>sample name</span></strong></font></p>
+</div><blockquote>
+<p><span>Run the following commands to extract sample IDs</span></p>
+</blockquote><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span></div><div class="code"><span class="hljs-built_in">ls</span> ./reads/*fastq |sed <span class="hljs-string">'s/_[^_]*.fastq$//g'</span> |<span class="hljs-built_in">sort</span> -u |xargs -i{} <span class="hljs-built_in">basename</span> {} &gt; ./samples.txt
+</div></div></code></pre><div class="alert alert-success">
+<p><span>Check whether sample IDs have been extracted correctly.</span></p>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span></div><div class="code"><span class="hljs-built_in">cat</span> samples.txt
+</div></div></code></pre><blockquote>
+<p><span>The output should look like this, without </span><font color="red"><strong><span>(_*fastq)</span></strong></font><span> extension</span></p>
+</blockquote><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span></div><div class="code">tumor
+normal
+</div></div></code></pre><div class="alert alert-success">
+<p><span>Run the following commands to perform the </span><font color="blue"><strong><span>alignment</span></strong></font><span>.</span></p>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span></div><div class="code"><span class="hljs-comment"># ensure you have a directory called bams to store alignment results</span>
+<span class="hljs-built_in">mkdir</span> -p ./bams
+</div></div></code></pre><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-comment"># Align paired end reads to the reference</span>
+<span class="hljs-keyword">for</span> <span class="hljs-built_in">id</span> <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">cat</span> samples.txt); <span class="hljs-keyword">do</span>
+    bwa mem \
+        -t 4 -aM ./ref/Homo_sapiens_assembly38.fasta \
+        -R <span class="hljs-string">"@RG\tID:<span class="hljs-variable">${id}</span>\tSM:<span class="hljs-variable">${id}</span>\tPL:ILLUMINA"</span> \
+        ./trim/<span class="hljs-variable">${id}</span>_1_trim.fastq \
+        ./trim/<span class="hljs-variable">${id}</span>_2_trim.fastq |\
+        samtools view -bS - &gt; ./bams/<span class="hljs-variable">${id}</span>.bam
+<span class="hljs-keyword">done</span>
+</div></div></code></pre><blockquote>
+<p><span>The output are unsorted bam files as below</span></p>
+</blockquote><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span></div><div class="code">samtools view -h ./bams/normal.bam |<span class="hljs-built_in">head</span> -n4
+</div></div></code></pre><p><img src="https://hackmd.io/_uploads/SkentfBKC.png" alt="image" class="offline-handled error-handled" loading="lazy"></p><div class="alert alert-info">
+<p><span>Th </span><mark><span>for loop</span></mark><span> enables you to perform alignment on multiple samples as above</span></p>
+<blockquote>
+<p><span>Breakdown of the </span><font color="red"><strong><span>options</span></strong></font><span> used</span></p>
+</blockquote>
+</div><blockquote>
+<blockquote>
+<ul>
+<li><font color="red"><span>-t:</span></font><span> This specifies the number of threads(CPU) to use, </span><font color="green"><em><span>4 CPUs</span></em></font><span> in this case. This speeds up the process. You can adjust this value depending on your need and the capability of your machine</span></li>
+<li><font color="red"><span>-a:</span></font><span> Outputs all alignments for SE or unpaired PE reads, not just the best one</span></li>
+<li><font color="red"><span>-M:</span></font><span> Marks shorter split hits as secondary alignment, for </span><font color="green"><em><span>Picard compatibility</span></em></font></li>
+<li><font color="red"><span>-R:</span></font><span> Adds read group information to the output BAM file.</span></li>
+<li><font color="red"><span>-samtools view:</span></font><span> This command converts SAM format which is the alignment output into BAM format.</span></li>
+<li><font color="red"><span>-b:</span></font><span> specifies that the output should be in BAM format</span></li>
+<li><font color="red"><span>-S:</span></font><span> Specifies that the Input to samtools is in SAM format, which is the output from bwa mem</span></li>
+<li><font color="red"><strong><span>-</span></strong><span>:</span></font><span>  This (-) at the end of bS option specifies that the input for samtools is the output of the previous command (bwa mem, in this case)</span></li>
+</ul>
+</blockquote>
+</blockquote><div class="alert alert-info">
+<blockquote>
+<p><span>The next step is to </span><font color="orange"><span>index the output bam</span></font><span> However, this requires </span><font color="orange"><span>sorted bam files</span></font><span>;</span></p>
+</blockquote>
+</div><div class="alert alert-success">
+<p><img class="emoji offline-handled error-handled" alt=":computer:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/computer.png"><span> Sort bam files</span></p>
+<blockquote>
+<p><font color="orange"><span>Sorting</span></font><span> is to organize the aligned reads either by their genomic coordinates or by read names, which is essential for downstream analyses such as duplicate marking, variant calling, and efficient data retrieval.</span></p>
+</blockquote>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">for</span> <span class="hljs-built_in">id</span> <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">cat</span> samples.txt); <span class="hljs-keyword">do</span>
+    samtools <span class="hljs-built_in">sort</span> ./bams/<span class="hljs-variable">${id}</span>.bam -o ./bams/<span class="hljs-variable">${id}</span>_sorted.bam 
+<span class="hljs-keyword">done</span>
+</div></div></code></pre><div class="alert alert-success">
+<p><img class="emoji offline-handled error-handled" alt=":computer:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/computer.png"><span> Index the  sorted bam files</span></p>
+<blockquote>
+<p><span>This enables quick retrieval of specific regions of the genome, significantly speeding up data access and enabling efficient querying of aligned sequencing data.</span>
+<span>You can as well generate the alignment summary statistics for the bam files using </span><mark><em><span>samtools flagstat</span></em></mark><span> command</span></p>
+</blockquote>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">for</span> <span class="hljs-built_in">id</span> <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">cat</span> samples.txt); <span class="hljs-keyword">do</span>
+    samtools index ./bams/<span class="hljs-variable">${id}</span>_sorted.bam
+    samtools flagstat ./bams/<span class="hljs-variable">${id}</span>_sorted.bam &gt; ./bams/<span class="hljs-variable">${id}</span>.stats.txt || <span class="hljs-built_in">exit</span> 1
+<span class="hljs-keyword">done</span>
+</div></div></code></pre><div class="alert alert-info">
+<blockquote>
+<p><span>The next step is to mark sequence duplicates. This is done using GATK (Genome Analysis Toolkit)</span>
+<span>GATK is a software suite developed by the Broad Institute for analyzing high-throughput sequencing data. It offers a wide range of utilities that perform a number of tasks such as quality control, data processing, duplicate marking, base recalibration, variant calling among others</span></p>
+</blockquote>
+</div><h3 id="2a-Mark-Sequence-Duplicates-" data-id="2a-Mark-Sequence-Duplicates-"><a class="anchor hidden-xs" href="#2a-Mark-Sequence-Duplicates-" title="2a-Mark-Sequence-Duplicates-"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><font color="blue"><span>2(a): Mark Sequence Duplicates </span></font></h3><blockquote>
+<p><span>The </span><font color="red"><em><span>GATK MarkDuplicates</span></em></font><span> tool identifies and tags duplicate reads (reads originating from a single DNA fragment) in a BAM or SAM file.</span>
+<span>These duplicates arise during sample preparation or from optical sensor errors.</span></p>
+<p><span>The tool compares sequences at the 5' positions, uses molecular barcodes if available, and marks duplicates in the SAM flags field with a hexadecimal value of 0x0400 (decimal 1024), producing a new SAM or BAM file with these annotations</span></p>
+</blockquote><div class="alert alert-success">
+<p><img class="emoji offline-handled error-handled" alt=":computer:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/computer.png"><span> Run the following commands to mark duplicates</span></p>
+</div><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span></div><div class="code"><span class="hljs-comment"># Make a directory to store the output of gatk MarkDuplicates</span>
+<span class="hljs-built_in">mkdir</span> -p ./gatk
+</div></div></code></pre><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">for</span> <span class="hljs-built_in">id</span> <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">cat</span> samples.txt); <span class="hljs-keyword">do</span>
+    gatk MarkDuplicates \
+        --INPUT ./bams/<span class="hljs-variable">${id}</span>_sorted.bam \
+        --OUTPUT ./gatk/<span class="hljs-variable">${id}</span>_mkdp.bam \
+        --METRICS_FILE ./gatk/<span class="hljs-variable">${id}</span>_metrics.txt \
+        --REMOVE_DUPLICATES <span class="hljs-literal">false</span> \
+        --CREATE_INDEX <span class="hljs-literal">true</span>
+<span class="hljs-keyword">done</span>
+</div></div></code></pre><div class="alert alert-info">
+<blockquote>
+<p><span>Breakdown of the </span><font color="red"><strong><span>options</span></strong></font><span> used</span></p>
+</blockquote>
+</div><blockquote>
+<blockquote>
+<ul>
+<li><font color="red"><span>- -REMOVE_DUPLICATES false:</span></font><span> Indicates that duplicates should be marked but not removed from the BAM file.</span>
+<span>If </span><font color="red"><span> true</span></font><span> do not write duplicates to the output file</span>
+<span>instead of writing them with appropriate flags set.</span></li>
+<li><font color="red"><span>- -INPUT:</span></font><span> One or more input SAM or BAM files to analyze. Must be coordinate sorted.</span></li>
+<li><font color="red"><span>- -OUTPUT:</span></font><span> The output file to write marked records to.</span></li>
+<li><font color="red"><span>- -METRICS_FILE:</span></font><span> File to write duplication metrics to. This file contains statistics about the duplicates found in the input BAM.</span></li>
+<li><font color="red"><span>- -CREATE_INDEX true:</span></font><span> Creates an index for the output BAM file, enabling quick access to specific regions.</span></li>
+</ul>
+</blockquote>
+</blockquote><h3 id="2c-Base-Quality-Score-Recalibration-BQSR" data-id="2c-Base-Quality-Score-Recalibration-BQSR"><a class="anchor hidden-xs" href="#2c-Base-Quality-Score-Recalibration-BQSR" title="2c-Base-Quality-Score-Recalibration-BQSR"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><font color="blue"><span>2(c.): Base Quality Score Recalibration (BQSR)</span></font></h3><blockquote>
+<p><span>The goal of this step is to correct for systematic bias that affect the assignment of base</span>
+<span>quality scores by the sequencer.</span></p>
+<p><span>BQSR is done in two steps:</span></p>
+<blockquote>
+<p><span>The first pass </span><mark><em><span>(Generation of recalibration table)</span></em></mark><span> consists of calculating error empirically and finding patterns in how error varies with basecall features over all bases. The relevant observations are written to a recalibration table.</span>
+<span>The second pass </span><mark><em><span>(Applyng generated recalibration data)</span></em></mark><span> consists of applying numerical corrections to each individual basecall based on the patterns identified in the first step (recorded in the recalibration table) and write out the recalibrated data to a new BAM or CRAM file.</span></p>
+</blockquote>
+</blockquote><div class="alert alert-success">
+<p><img class="emoji offline-handled error-handled" alt=":computer:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/computer.png"><span> Generate Recalibration Table</span></p>
+</div><blockquote>
+<p><span>Tool: </span><font color="red"><span> </span><em><span>gatk BaseRecalibrator</span></em><span> </span></font></p>
+</blockquote><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">for</span> <span class="hljs-built_in">id</span> <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">cat</span> samples.txt); <span class="hljs-keyword">do</span>
+    gatk BaseRecalibrator \
+        -I ./gatk/<span class="hljs-variable">${id}</span>_mkdp.bam \
+        -R <span class="hljs-variable">${ref}</span> \
+        --known-sites ./ref/Mills_and_1000G_gold_standard.indels.hg38.vcf \
+        --known-sites ./ref/Homo_sapiens_assembly38.known_indels.vcf \
+        --known-sites ./ref/1000G_phase1.snps.high_confidence.hg38.vcf \
+        -O ./recal/<span class="hljs-variable">${id}</span>_recal_data.table
+<span class="hljs-keyword">done</span>
+</div></div></code></pre><div class="alert alert-success">
+<p><img class="emoji offline-handled error-handled" alt=":computer:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/computer.png"><span> Apply Recalibration data to bam file</span></p>
+</div><blockquote>
+<p><span>Tool: </span><font color="red"><span> </span><em><span>gatk ApplyBQSR</span></em></font></p>
+</blockquote><pre><code class="bash hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">for</span> <span class="hljs-built_in">id</span> <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">cat</span> samples.txt); <span class="hljs-keyword">do</span>
+    gatk ApplyBQSR \
+        -R <span class="hljs-variable">${ref}</span> \
+        -I ./gatk/<span class="hljs-variable">${id}</span>_mkdp.bam \
+        --bqsr-recal-file ./recal/<span class="hljs-variable">${id}</span>_recal_data.table \
+        -O ./recal/<span class="hljs-variable">${id}</span>_recal.bam
+<span class="hljs-keyword">done</span>
+</div></div></code></pre><div class="alert alert-info">
+<blockquote>
+<p><span>Breakdown of the </span><font color="red"><strong><span>options</span></strong></font><span> used</span></p>
+</blockquote>
+</div><blockquote>
+<blockquote>
+<ul>
+<li><font color="red"><span class="smartypants">–</span><span>bqsr-recal-file:</span></font><span> Input recalibration table for BQSR</span></li>
+<li><font color="red"><span class="smartypants">–</span><span>known-sites:</span></font><span> One or more databases of known polymorphic sites used to exclude regions around known polymorphisms from analysis. You can obtain the files from </span><a href="https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0;tab=objects?prefix=&amp;forceOnObjectsSortingFiltering=false" target="_blank" rel="noopener"><strong><span>GOOGLE CLOUD</span></strong></a><span>. After downloading, make sure you index the sites files using </span><font color="red"><span> </span><em><span>gatk IndexFeatureFile</span></em></font></li>
+<li><font color="red"><span>-I:</span></font><span> BAM/SAM/CRAM file containing reads</span></li>
+<li><font color="red"><span>-O:</span></font><span> The file to which the output should be written</span></li>
+<li><font color="red"><span>-R:</span></font><span> Reference sequence</span></li>
+</ul>
+</blockquote>
+</blockquote><h2 id="STEP3-VARIANT-CALLING-AND-ANNOTATION" data-id="STEP3-VARIANT-CALLING-AND-ANNOTATION"><a class="anchor hidden-xs" href="#STEP3-VARIANT-CALLING-AND-ANNOTATION" title="STEP3-VARIANT-CALLING-AND-ANNOTATION"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><strong><span>STEP3:</span></strong><span> </span><font color="violet"><span>VARIANT CALLING AND ANNOTATION</span></font></h2><p><span>Downloading population variant file and its index (used to filter out potential germline mutations from the final list of somatic mutations). These are available at </span><a href="https://console.cloud.google.com/storage/browser/gatk-best-practices/somatic-hg38;tab=objects?prefix=&amp;forceOnObjectsSortingFiltering=false" target="_blank" rel="noopener"><span>link</span></a></p><pre><code class="{bash} hljs">wget -P reference https:<span class="hljs-regexp">//</span>storage.googleapis.com<span class="hljs-regexp">/gatk-best-practices/</span>somatic-hg38/af-only-gnomad.hg38.vcf.gz
+wget -P reference https:<span class="hljs-regexp">//</span>storage.googleapis.com<span class="hljs-regexp">/gatk-best-practices/</span>somatic-hg38/af-only-gnomad.hg38.vcf.gz.tbi
+</code></pre><p><span>Unzipping the vcf file downloaded above.</span></p><pre><code class="{bash} hljs">gunzip $dir3<span class="hljs-operator">/</span>af<span class="hljs-operator">-</span>only<span class="hljs-operator">-</span>gnomad.hg38.vcf.gz
+</code></pre><pre><code class="{bash} hljs">k5=<span class="hljs-string">"af-only-gnomad.hg38.vcf.gz"</span>
+
+<span class="hljs-comment"># Creating variables with tumor and normal sample names respectively</span>
+tsample=$(<span class="hljs-built_in">cat</span> tsamples)
+nsample=$(<span class="hljs-built_in">cat</span> nsamples)
+
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-variable">$tsample</span>
+<span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># Assuming names are separated by space in the respective files</span>
+  name1=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$i</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -f 1)
+  j=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$nsample</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -f 1)
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$name1</span>,<span class="hljs-variable">$j</span>"</span>
+  START=<span class="hljs-string">"<span class="hljs-subst">$( date +%s )</span>"</span>
+  gatk  Mutect2 -R <span class="hljs-variable">$dir3</span>/<span class="hljs-variable">$ref</span> -I <span class="hljs-variable">$dir5</span>/<span class="hljs-variable">${name1}</span>_tumor_recal.bam --tumor-sample <span class="hljs-variable">${name1}</span> -I <span class="hljs-variable">$dir7</span>/<span class="hljs-variable">${j}</span>_normal_recal.bam --normal-sample <span class="hljs-variable">${j}</span> -O <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">${name1}</span>_tumor_<span class="hljs-variable">${j}</span>_normal.Mutect2.raw.vcf --germline-resource <span class="hljs-variable">$dir3</span>/<span class="hljs-variable">$k5</span> --tmp-dir temp_dir --java-options <span class="hljs-string">'-Xmx16g -Djava.io.tmpdir=tmp'</span>
+  END=<span class="hljs-string">"<span class="hljs-subst">$( date +%s )</span>"</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Variant calling <span class="hljs-variable">${i,j}</span> : $[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+<span class="hljs-comment"># Shift remaining names in both variables</span>
+  tsample=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$tsample</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -sf 2-)
+  nsample=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$nsample</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -sf 2-)
+<span class="hljs-keyword">done</span>
+</code></pre><div class="alert alert-success">
+<h3 id="-Step-3b-Variant-filtering" data-id="-Step-3b-Variant-filtering"><a class="anchor hidden-xs" href="#-Step-3b-Variant-filtering" title="-Step-3b-Variant-filtering"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><img class="emoji offline-handled error-handled" alt=":feet:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/feet.png"><span> Step 3b: Variant filtering</span></h3>
+</div><pre><code class="{bash} hljs"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-variable">$tsample</span>
+<span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># Assuming names are separated by space</span>
+  name1=<span class="hljs-variable">$</span>(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$i</span>"</span> | cut <span class="hljs-literal">-d</span> <span class="hljs-string">' '</span> <span class="hljs-operator">-f</span> <span class="hljs-number">1</span>)
+  j=<span class="hljs-variable">$</span>(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$nsample</span>"</span> | cut <span class="hljs-literal">-d</span> <span class="hljs-string">' '</span> <span class="hljs-operator">-f</span> <span class="hljs-number">1</span>)
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$name1</span>,<span class="hljs-variable">$j</span>"</span>
+  <span class="hljs-keyword">if</span> [ -<span class="hljs-type">e</span> <span class="hljs-variable">$dir5</span>/<span class="hljs-variable">$</span>{<span class="hljs-type">name1</span>}<span class="hljs-type">_tumor_recal.bam</span> ]
+	then
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"Found file for <span class="hljs-variable">$</span>{i}_tumrecal_sorted.bam"</span>
+	       	<span class="hljs-built_in">echo</span> <span class="hljs-string">"Getting pileup information for the samples at sites of known mutations"</span>
+		<span class="hljs-built_in">START</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+	       	gatk GetPileupSummaries <span class="hljs-literal">-I</span> <span class="hljs-variable">$dir5</span>/<span class="hljs-variable">$</span>{name1}_tumor_recal.bam <span class="hljs-literal">-O</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_tumor.pileups.table <span class="hljs-literal">--variant</span> <span class="hljs-variable">$dir3</span>/<span class="hljs-variable">$k5</span> <span class="hljs-literal">--intervals</span> Illumina_Exome_TargetedRegions_v1.<span class="hljs-number">2</span>.hg38.bed <span class="hljs-literal">--tmp-dir</span> temp_dir <span class="hljs-literal">--java-options</span> <span class="hljs-string">'-Xmx16g -Djava.io.tmpdir=tmp'</span>
+		<span class="hljs-keyword">END</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Generating pileup summaries for <span class="hljs-variable">$</span>{name1} : <span class="hljs-variable">$</span>[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+	<span class="hljs-keyword">else</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"No corresponding file found for <span class="hljs-variable">$</span>{i}_tumrecal_sorted.bam"</span>
+	fi
+	<span class="hljs-keyword">if</span> [ -<span class="hljs-type">e</span> <span class="hljs-variable">$dir7</span>/<span class="hljs-variable">$</span>{<span class="hljs-type">j</span>}<span class="hljs-type">_normal_recal.bam</span> ]
+	then
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"Found file for <span class="hljs-variable">$</span>{i}_normrecal_sorted.bam"</span>
+		<span class="hljs-built_in">START</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+	       	gatk GetPileupSummaries <span class="hljs-literal">-I</span> <span class="hljs-variable">$dir7</span>/<span class="hljs-variable">$</span>{j}_normal_recal.bam <span class="hljs-literal">-O</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{j}_normal.pileups.table <span class="hljs-literal">--variant</span> <span class="hljs-variable">$dir3</span>/<span class="hljs-variable">$k5</span> <span class="hljs-literal">--intervals</span> Illumina_Exome_TargetedRegions_v1.<span class="hljs-number">2</span>.hg38.bed <span class="hljs-literal">--tmp-dir</span> temp_dir <span class="hljs-literal">--java-options</span> <span class="hljs-string">'-Xmx16g -Djava.io.tmpdir=tmp'</span>
+		<span class="hljs-keyword">END</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Generating pileup summaries for <span class="hljs-variable">$</span>{j} : <span class="hljs-variable">$</span>[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+	<span class="hljs-keyword">else</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"No corresponding file found for <span class="hljs-variable">$</span>{i}_normrecal_sorted.bam"</span>
+	fi
+	<span class="hljs-keyword">if</span> [ -<span class="hljs-type">e</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{<span class="hljs-type">name1</span>}<span class="hljs-type">_tumor.pileups.table</span> ] || [ -<span class="hljs-type">e</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{<span class="hljs-type">j</span>}<span class="hljs-type">_normal.pileups.table</span> ]
+	then
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"Found files for <span class="hljs-variable">$</span>{name1}_tumor.pileups.table and <span class="hljs-variable">$</span>{j}_normal.pileups.table"</span>
+	       	<span class="hljs-built_in">echo</span> <span class="hljs-string">"Estimation of contamination"</span>
+		<span class="hljs-built_in">START</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+   	   	gatk CalculateContamination <span class="hljs-literal">-I</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_tumor.pileups.table <span class="hljs-literal">-O</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_Tumor_<span class="hljs-variable">$</span>{j}_Normal.contamination.table <span class="hljs-literal">--matched-normal</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{j}_normal.pileups.table <span class="hljs-literal">--tmp-dir</span> temp_dir <span class="hljs-literal">--java-options</span> <span class="hljs-string">'-Xmx16g -Djava.io.tmpdir=tmp'</span>
+		<span class="hljs-keyword">END</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Calculating contaminations for <span class="hljs-variable">$</span>{name1,j} : <span class="hljs-variable">$</span>[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+	       	<span class="hljs-built_in">echo</span> <span class="hljs-string">"Application of a first filter to variant calls"</span>
+		<span class="hljs-built_in">START</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+	       	gatk FilterMutectCalls <span class="hljs-literal">--variant</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_tumor_<span class="hljs-variable">$</span>{j}_normal.Mutect2.raw.vcf <span class="hljs-literal">-O</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_Tumor_<span class="hljs-variable">$</span>{j}_Normal.Mutect2.oncefiltered.vcf <span class="hljs-literal">--contamination-table</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_Tumor_<span class="hljs-variable">$</span>{j}_Normal.contamination.table <span class="hljs-literal">--reference</span> <span class="hljs-variable">$dir3</span>/<span class="hljs-variable">$ref</span> <span class="hljs-literal">--tmp-dir</span> temp_dir <span class="hljs-literal">--java-options</span> <span class="hljs-string">'-Xmx16g -Djava.io.tmpdir=tmp'</span>
+		<span class="hljs-keyword">END</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Applying first filtering parameters <span class="hljs-variable">$</span>{name1,j} : <span class="hljs-variable">$</span>[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+<span class="hljs-comment">#		echo "Applying the second pass filter"</span>
+<span class="hljs-comment">#		START="$( date +%s )"</span>
+<span class="hljs-comment">#	       	gatk FilterByOrientationBias --variant $dir6/${name1}_Tumor_${j}_Normal.Mutect2.oncefiltered.vcf  -O $dir6/${name1}_Tumor_${j}_Normal.Mutect2.twicefiltered.vcf</span>
+<span class="hljs-comment">#		END="$( date +%s )"</span>
+<span class="hljs-comment">#		echo "==================Applying second filtering parameters ${name1,j} : $[ $END - $START ] seconds===============" &gt;&gt; time.txt</span>
+     		<span class="hljs-built_in">echo</span> <span class="hljs-string">"Removing variants that failed to pass the filter check"</span>
+		<span class="hljs-built_in">START</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+	       	awk <span class="hljs-string">'/^#/ {print $0; next} $7=="PASS" {print $0}'</span> <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_Tumor_<span class="hljs-variable">$</span>{j}_Normal.Mutect2.oncefiltered.vcf &gt; <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">$</span>{name1}_T_<span class="hljs-variable">$</span>{j}_N.vcf
+		<span class="hljs-keyword">END</span>=<span class="hljs-string">"<span class="hljs-variable">$</span>( date +%s )"</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Removing variants that failed to pass the filters for <span class="hljs-variable">$</span>{name1,j} : <span class="hljs-variable">$</span>[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+	<span class="hljs-keyword">else</span>
+		<span class="hljs-built_in">echo</span> <span class="hljs-string">"No corresponding file found for SRR25434460_tumor.pileups.table and SRR25434461_normal.pileups.table"</span>
+	fi
+<span class="hljs-comment"># Shift remaining names in both variables</span>
+  tsample=<span class="hljs-variable">$</span>(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$tsample</span>"</span> | cut <span class="hljs-literal">-d</span> <span class="hljs-string">' '</span> <span class="hljs-literal">-sf</span> <span class="hljs-number">2</span>-)
+  nsample=<span class="hljs-variable">$</span>(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$nsample</span>"</span> | cut <span class="hljs-literal">-d</span> <span class="hljs-string">' '</span> <span class="hljs-literal">-sf</span> <span class="hljs-number">2</span>-)
+done
+</code></pre><div class="alert alert-success">
+<h3 id="-Step-3c-variant-annotation" data-id="-Step-3c-variant-annotation"><a class="anchor hidden-xs" href="#-Step-3c-variant-annotation" title="-Step-3c-variant-annotation"><span class="octicon octicon-link ph ph-link-simple-horizontal"></span></a><img class="emoji offline-handled error-handled" alt=":feet:" src="https://cdn.jsdelivr.net/npm/@hackmd/emojify.js@2.1.0/dist/images/basic/feet.png"><span> Step 3c: variant annotation</span></h3>
+</div><pre><code class="{bash} hljs"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-variable">$tsample</span>
+<span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># Assuming names are separated by space</span>
+  name1=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$i</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -f 1)
+  j=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$nsample</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -f 1)
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$name1</span>,<span class="hljs-variable">$j</span>"</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"Variant Annotation of <span class="hljs-variable">$name1</span> and <span class="hljs-variable">$j</span> using snpeff"</span>
+  START=<span class="hljs-string">"<span class="hljs-subst">$( date +%s )</span>"</span>
+  snpEff download -v hg38
+  END=<span class="hljs-string">"<span class="hljs-subst">$( date +%s )</span>"</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"================== Downloading the hg38 reference database : $[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+  START=<span class="hljs-string">"<span class="hljs-subst">$( date +%s )</span>"</span>
+  snpEff hg38 <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">${name1}</span>_T_<span class="hljs-variable">${j}</span>_N.vcf &gt; <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">${name1}</span>_T_<span class="hljs-variable">${j}</span>_N_annsnpEff.vcf
+  snpEff hg38 -s <span class="hljs-variable">${name1}</span>_T_<span class="hljs-variable">${j}</span>_N_summary.html -stats <span class="hljs-variable">${name1}</span>_T_<span class="hljs-variable">${j}</span>_N_stats.txt <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">${name1}</span>_T_<span class="hljs-variable">${j}</span>_N.vcf &gt; <span class="hljs-variable">$dir6</span>/<span class="hljs-variable">${name1}</span>_T_<span class="hljs-variable">${j}</span>_N_annsnpEff.vcf
+  END=<span class="hljs-string">"<span class="hljs-subst">$( date +%s )</span>"</span>
+  <span class="hljs-built_in">echo</span> <span class="hljs-string">"==================Applying annotations for <span class="hljs-variable">${name1,j}</span> : $[ <span class="hljs-variable">$END</span> - <span class="hljs-variable">$START</span> ] seconds==============="</span> &gt;&gt; time.txt
+ <span class="hljs-comment"># Shift remaining names in both variables</span>
+  tsample=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$tsample</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -sf 2-)
+  nsample=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$nsample</span>"</span> | <span class="hljs-built_in">cut</span> -d <span class="hljs-string">' '</span> -sf 2-)
+<span class="hljs-keyword">done</span>
+</code></pre><ol style="padding-left: 2em;">
+<li><span>Create the repository on GitHub(website); if it already exists, skip it.</span></li>
+<li><span>Go to terminals</span>
+<ol style="padding-left: 2em;">
+<li><span>git clone </span><a href="https://github.com/repository.git" target="_blank" rel="noopener"><span>https://github.com/repository.git</span></a></li>
+<li><span>cd repository</span></li>
+<li><span>git status</span></li>
+<li><span>git add .</span></li>
+<li><span>git status</span></li>
+<li><span>git commit -m "[what are you do]"</span></li>
+<li><span>git push</span></li>
+<li><span>Enter: the username</span></li>
+<li><span>Enter: token (ps: password had been canceled)</span>
+<ul>
+<li><span>Settings</span></li>
+<li><span>Developer settings</span></li>
+<li><span>Personal access tokens</span></li>
+</ul>
+</li>
+</ol>
+</li>
+</ol></div>
+    <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
+        <div class="pull-right dropdown">
+            <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
+                <i class="fa fa-bars"></i>
+            </a>
+            <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
+                <div class="toc"><ul class="nav">
+<li class=""><a href="#-SOMATIC-VARIANT-DETECTION-IN-CANCER-GENOME-" title=" SOMATIC VARIANT DETECTION IN CANCER GENOME "> SOMATIC VARIANT DETECTION IN CANCER GENOME </a><ul class="nav">
+<li class=""><a href="#STEP1-PRE-PROCESSING" title="STEP1: PRE-PROCESSING">STEP1: PRE-PROCESSING</a></li>
+<li class=""><a href="#STEP2-ALIGNMENT-TO-THE-REFERENCE-AND-PREPARING-BAM-FILES-FOR-VARIANT-CALLING" title="STEP2: ALIGNMENT TO THE REFERENCE AND PREPARING BAM FILES FOR VARIANT CALLING">STEP2: ALIGNMENT TO THE REFERENCE AND PREPARING BAM FILES FOR VARIANT CALLING</a><ul class="nav">
+<li class=""><a href="#Tools-Involved" title="Tools Involved:">Tools Involved:</a></li>
+<li class=""><a href="#2a-Align-Reads-To-The-Reference" title="2(a): Align Reads To The Reference">2(a): Align Reads To The Reference</a></li>
+<li><a href="#2a-Mark-Sequence-Duplicates-" title="2(a): Mark Sequence Duplicates ">2(a): Mark Sequence Duplicates </a></li>
+<li><a href="#2c-Base-Quality-Score-Recalibration-BQSR" title="2(c.): Base Quality Score Recalibration (BQSR)">2(c.): Base Quality Score Recalibration (BQSR)</a></li>
+</ul>
+</li>
+<li><a href="#STEP3-VARIANT-CALLING-AND-ANNOTATION" title="STEP3: VARIANT CALLING AND ANNOTATION">STEP3: VARIANT CALLING AND ANNOTATION</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+            </ul>
+        </div>
+    </div>
+    <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;"  >
+        <div class="toc"><ul class="nav">
+<li class=""><a href="#-SOMATIC-VARIANT-DETECTION-IN-CANCER-GENOME-" title=" SOMATIC VARIANT DETECTION IN CANCER GENOME "> SOMATIC VARIANT DETECTION IN CANCER GENOME </a><ul class="nav">
+<li class=""><a href="#STEP1-PRE-PROCESSING" title="STEP1: PRE-PROCESSING">STEP1: PRE-PROCESSING</a></li>
+<li class=""><a href="#STEP2-ALIGNMENT-TO-THE-REFERENCE-AND-PREPARING-BAM-FILES-FOR-VARIANT-CALLING" title="STEP2: ALIGNMENT TO THE REFERENCE AND PREPARING BAM FILES FOR VARIANT CALLING">STEP2: ALIGNMENT TO THE REFERENCE AND PREPARING BAM FILES FOR VARIANT CALLING</a><ul class="nav">
+<li class=""><a href="#Tools-Involved" title="Tools Involved:">Tools Involved:</a></li>
+<li class=""><a href="#2a-Align-Reads-To-The-Reference" title="2(a): Align Reads To The Reference">2(a): Align Reads To The Reference</a></li>
+<li><a href="#2a-Mark-Sequence-Duplicates-" title="2(a): Mark Sequence Duplicates ">2(a): Mark Sequence Duplicates </a></li>
+<li><a href="#2c-Base-Quality-Score-Recalibration-BQSR" title="2(c.): Base Quality Score Recalibration (BQSR)">2(c.): Base Quality Score Recalibration (BQSR)</a></li>
+</ul>
+</li>
+<li><a href="#STEP3-VARIANT-CALLING-AND-ANNOTATION" title="STEP3: VARIANT CALLING AND ANNOTATION">STEP3: VARIANT CALLING AND ANNOTATION</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.6.0/gist-embed.min.js" integrity="sha256-KyF2D6xPIJUW5sUDSs93vWyZm+1RzIpKCexxElmxl8g=" crossorigin="anonymous" defer></script>
+    <script>
+        var markdown = $(".markdown-body");
+        //smooth all hash trigger scrolling
+        function smoothHashScroll() {
+            var hashElements = $("a[href^='#']").toArray();
+            for (var i = 0; i < hashElements.length; i++) {
+                var element = hashElements[i];
+                var $element = $(element);
+                var hash = element.hash;
+                if (hash) {
+                    $element.on('click', function (e) {
+                        // store hash
+                        var hash = this.hash;
+                        if ($(hash).length <= 0) return;
+                        // prevent default anchor click behavior
+                        e.preventDefault();
+                        // animate
+                        $('body, html').stop(true, true).animate({
+                            scrollTop: $(hash).offset().top
+                        }, 100, "linear", function () {
+                            // when done, add hash to url
+                            // (default click behaviour)
+                            window.location.hash = hash;
+                        });
+                    });
+                }
+            }
+        }
+
+        smoothHashScroll();
+        var toc = $('.ui-toc');
+        var tocAffix = $('.ui-affix-toc');
+        var tocDropdown = $('.ui-toc-dropdown');
+        //toc
+        tocDropdown.click(function (e) {
+            e.stopPropagation();
+        });
+
+        var enoughForAffixToc = true;
+
+        function generateScrollspy() {
+            $(document.body).scrollspy({
+                target: ''
+            });
+            $(document.body).scrollspy('refresh');
+            if (enoughForAffixToc) {
+                toc.hide();
+                tocAffix.show();
+            } else {
+                tocAffix.hide();
+                toc.show();
+            }
+            $(document.body).scroll();
+        }
+
+        function windowResize() {
+            //toc right
+            var paddingRight = parseFloat(markdown.css('padding-right'));
+            var right = ($(window).width() - (markdown.offset().left + markdown.outerWidth() - paddingRight));
+            toc.css('right', right + 'px');
+            //affix toc left
+            var newbool;
+            var rightMargin = (markdown.parent().outerWidth() - markdown.outerWidth()) / 2;
+            //for ipad or wider device
+            if (rightMargin >= 133) {
+                newbool = true;
+                var affixLeftMargin = (tocAffix.outerWidth() - tocAffix.width()) / 2;
+                var left = markdown.offset().left + markdown.outerWidth() - affixLeftMargin;
+                tocAffix.css('left', left + 'px');
+            } else {
+                newbool = false;
+            }
+            if (newbool != enoughForAffixToc) {
+                enoughForAffixToc = newbool;
+                generateScrollspy();
+            }
+        }
+        $(window).resize(function () {
+            windowResize();
+        });
+        $(document).ready(function () {
+            windowResize();
+            generateScrollspy();
+        });
+
+        //remove hash
+        function removeHash() {
+            window.location.hash = '';
+        }
+
+        var backtotop = $('.back-to-top');
+        var gotobottom = $('.go-to-bottom');
+
+        backtotop.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToTop)
+                scrollToTop();
+            removeHash();
+        });
+        gotobottom.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToBottom)
+                scrollToBottom();
+            removeHash();
+        });
+
+        var toggle = $('.expand-toggle');
+        var tocExpand = false;
+
+        checkExpandToggle();
+        toggle.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            tocExpand = !tocExpand;
+            checkExpandToggle();
+        })
+
+        function checkExpandToggle () {
+            var toc = $('.ui-toc-dropdown .toc');
+            var toggle = $('.expand-toggle');
+            if (!tocExpand) {
+                toc.removeClass('expand');
+                toggle.text('Expand all');
+            } else {
+                toc.addClass('expand');
+                toggle.text('Collapse all');
+            }
+        }
+
+        function scrollToTop() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: 0
+            }, 100, "linear");
+        }
+
+        function scrollToBottom() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: $(document.body)[0].scrollHeight
+            }, 100, "linear");
+        }
+    </script>
+</body>
+
+</html>
