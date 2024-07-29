@@ -1,4 +1,4 @@
-# <font color="green"> **SOMATIC VARIANT DETECTION IN CANCER** </font> 
+# <font color="green"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </font> 
 ---
 ## **STEP2:** <font color="green">Alignment To The Reference And Preparing Bam Files For Variant            calling</font>
 
