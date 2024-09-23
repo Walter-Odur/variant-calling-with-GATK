@@ -1,5 +1,5 @@
 <div align="center"> 
-	  <img src="![aceLogo](https://hackmd.io/_uploads/Bk0UcfrtC.png)" alt="Image" width="300"/>	
+	![aceLogo](https://hackmd.io/_uploads/Bk0UcfrtC.png)
 </div>	
 
 # <div align="center"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </div>
