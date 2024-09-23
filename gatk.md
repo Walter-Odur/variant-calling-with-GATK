@@ -1,7 +1,7 @@
 ![aceLogo](https://hackmd.io/_uploads/Bk0UcfrtC.png)
 
 
-# <font color="darkblue"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </font> 
+# <div align="center"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </div>
 ### Background
 On 29th November, 2023 members of the ACE Cancer Genomics Working Group agreed on building a custom variant calling pipeline which was to be curated, documented and finally adopted by the members of the group for use. We tested two popular tools (Vascan and GATK) used for variant calling as documented in this [PAPER](https://doi.org/10.1007/978-1-4939-8876-1_21).
 The main objective was to build a scableble, automated and well documented variant calling pipeline for our daily use.
