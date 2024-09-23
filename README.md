@@ -1,6 +1,9 @@
 ![aceLogo](https://hackmd.io/_uploads/Bk0UcfrtC.png)
 
 
+<font color="red">This text is red.</font>
+
+
 # <font color="darkblue"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </font> 
 :::info
 ### Background
