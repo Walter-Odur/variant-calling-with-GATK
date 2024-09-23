@@ -19,9 +19,9 @@ done
 ## :feet: **STEP1B:** PRE-PROCESSING
 ### a). Quality Control using FASTQC
 
-FASTQC is a Java-based quality control tool providing per-base and per-read quality profiling features. It is a program that will read through the raw sequence files (fastq) and perform a quality check on the data. It produces a report that summaries the information. We run a quality assessment on both the normal paired end reads and the tumor paired end reads.
+> FASTQC is a Java-based quality control tool providing per-base and per-read quality profiling features. It is a program that will read through the raw sequence files (fastq) and perform a quality check on the data. It produces a report that summaries the information. We run a quality assessment on both the normal paired end reads and the tumor paired end reads.
 
-A summary report is generated and it is divided into 10 analysis modules each giving details on the results obtained. An evaluation of the results obtained in each module is denoted by a green tick (for passed), a yellow exclamation mark (for any warnings) and a red cross (for failed). Go to [LINK](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) for more details about fastqc
+> A summary report is generated and it is divided into 10 analysis modules each giving details on the results obtained. An evaluation of the results obtained in each module is denoted by a green tick (for passed), a yellow exclamation mark (for any warnings) and a red cross (for failed). Go to [LINK](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) for more details about fastqc
 
 This step is important for;
 * **Identifying Quality Issues:** FastQC provides valuable insights into the quality of sequencing reads, such as low-quality bases, adapter contamination, and nucleotide bias.
