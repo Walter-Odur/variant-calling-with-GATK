@@ -1,6 +1,6 @@
-<div align="center"> 
-	![aceLogo](https://hackmd.io/_uploads/Bk0UcfrtC.png)
-</div>	
+<div align="center">
+  <img src="https://hackmd.io/_uploads/Bk0UcfrtC.png" alt="Image" width="300"/>
+</div>
 
 # <div align="center"> **SOMATIC VARIANT DETECTION IN CANCER GENOME** </div>
 ### Background
